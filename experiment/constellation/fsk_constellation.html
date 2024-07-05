@@ -1,0 +1,238 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="flex flex-col">
+        <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-4">
+            <div class="flex items-center gap-1">
+                <label for="numBits">Number of Random Bits:</label>
+                <input
+                class="border border-black px-2 py-1 rounded-sm"
+                type="number"
+                id="numBits"
+                value="100"
+                min="1"
+                />
+            </div>
+            <div class="flex items-center gap-1">
+                <label for="snr">Signal-to-Noise Ratio (SNR) in dB:</label>
+                <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="snr"
+                    value="20"
+                />
+                </div>
+        </div>
+          <div class="flex justify-around mt-6 max-lg:flex-col items-center">
+              <canvas id="constellationDiagram" width="620px" height="450px"></canvas>
+              <div id="plot" width="620px" height="450px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Function to generate random numbers with Box-Muller transform
+      function generateAWGN(mean, stdDev) {
+          let u1 = Math.random();
+          let u2 = Math.random();
+          let z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+          return mean + stdDev * z0;
+      }
+
+      function plotConstellation() {
+          // Get the number of symbols from the input field
+          const numSymbols = parseInt(document.getElementById('numBits').value);
+
+          // Get SNR value from input field
+          const snr = parseFloat(document.getElementById('snr').value);
+
+          // Calculate noise power
+          const noisePower = 1 / (Math.pow(10, snr / 10));
+
+          // Define the amplitude of the symbols (normalized to 1)
+          const symbolAmplitude = 1;
+
+          // Generate random integer symbols from 0 to 3
+          const symbols = Array.from({ length: numSymbols }, () => Math.floor(Math.random() * 2));
+
+          // Map symbols to phase shifts
+          const phaseShifts = symbols.map(symbol => symbol * (2 * Math.PI / 4)); // 4-PSK has 4 phase shifts
+
+          // Generate complex symbols based on the phase shifts
+          const complexSymbols = phaseShifts.map(phaseShift => ({
+              re: symbolAmplitude * Math.cos(phaseShift),
+              im: symbolAmplitude * Math.sin(phaseShift)
+          }));
+
+          // Add AWGN to complex symbols
+          const awgnSymbols = complexSymbols.map(symbol => ({
+              re: symbol.re + generateAWGN(0, Math.sqrt(noisePower / 2)),
+              im: symbol.im + generateAWGN(0, Math.sqrt(noisePower / 2))
+          }));
+
+          // Plot the constellation diagram
+          const canvas = document.getElementById('constellationDiagram');
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'black'; // Set color to black for all labels
+
+          // Define scaling values for x and y axes
+          const scaleX = canvas.width / 4; // range from -1 to 1
+          const scaleY = canvas.height / 4; // range from -2 to 2
+
+          // Draw tick marks and labels on x-axis
+          for (let i = -1; i <= 1; i++) {
+              const x = canvas.width / 2 + i * scaleX;
+              ctx.beginPath();
+              ctx.moveTo(x, canvas.height / 2 - 5);
+              ctx.lineTo(x, canvas.height / 2 + 5);
+              ctx.stroke();
+              ctx.fillText(i.toString(), x - 3, canvas.height / 2 + 15);
+          }
+          // Label for x-axis
+          ctx.font = 'bold 16px Arial';
+          ctx.fillText('Q', canvas.width - 15, canvas.height / 2 + 15);
+
+          // Draw tick marks and labels on y-axis
+          for (let i = -2; i <= 2; i++) {
+              const y = canvas.height / 2 - i * scaleY;
+              ctx.beginPath();
+              ctx.moveTo(canvas.width / 2 - 5, y);
+              ctx.lineTo(canvas.width / 2 + 5, y);
+              ctx.stroke();
+              // Adjust the labels to represent -j, +j
+              if (i === -1) {
+                  ctx.fillText("-j", canvas.width / 2 - 20, y + 3);
+              } else if (i === 1) {
+                  ctx.fillText("+j", canvas.width / 2 - 15, y + 3);
+              }
+          }
+          // Label for y-axis
+          ctx.font = 'bold 16px Arial';
+          ctx.fillText('I', canvas.width / 2 - 15, 10);
+
+          // Plot the constellation points
+          awgnSymbols.forEach(symbol => {
+              // Scale the symbol's coordinates to fit within the canvas
+              const x = symbol.re * scaleX + canvas.width / 2;
+              const y = -symbol.im * scaleY + canvas.height / 2;
+
+              // Plot the symbol
+              ctx.fillStyle = 'blue'; // Set color to blue for constellation points
+              ctx.beginPath();
+              ctx.arc(x, y, 3, 0, 2 * Math.PI);
+              ctx.fill();
+          });
+
+          // Draw x-axis
+          ctx.strokeStyle = 'black';
+          ctx.beginPath();
+          ctx.moveTo(0, canvas.height / 2);
+          ctx.lineTo(canvas.width, canvas.height / 2);
+          ctx.stroke();
+
+          // Draw y-axis
+          ctx.beginPath();
+          ctx.moveTo(canvas.width / 2, 0);
+          ctx.lineTo(canvas.width / 2, canvas.height);
+          ctx.stroke();
+      }
+
+      // Plot the constellation diagram initially
+      plotConstellation();
+
+      // Listen for input changes on the numBits and snr input fields
+      document.getElementById('numBits').addEventListener('input', plotConstellation);
+      document.getElementById('snr').addEventListener('input', plotConstellation);
+
+      // Parameters for BFSK constellation plot
+      const Fs = 1000; // Sampling frequency
+      const Ts = 1 / Fs; // Sampling period
+      const Fd = 50; // Frequency separation
+      const N = 2; // Number of samples per symbol
+      const fc = 200; // Carrier frequency for passband
+      const snrBFSK = 20; // Signal-to-Noise Ratio in dB
+
+      // Time vector for one symbol duration
+      const t = Array.from({ length: N }, (_, i) => i * Ts);
+
+      // Generate BFSK signals
+      const symbolsBFSK = [0, 1]; // BFSK symbols (0 and 1)
+      const frequencies = symbolsBFSK.map(symbol => symbol * Fd); // Frequencies for each symbol
+
+      function complexExp(frequency, time) {
+          const real = time.map(t => Math.cos(2 * Math.PI * frequency * t));
+          const imag = time.map(t=> Math.sin(2 * Math.PI * frequency * t));
+          return { real, imag };
+      }
+
+      const signals = frequencies.map(freq => complexExp(freq, t));
+
+      // Modulate to passband
+      const passbandSignals = signals.map(signal => {
+          const carrier = complexExp(fc, t);
+          const real = signal.real.map((val, idx) => val * carrier.real[idx] - signal.imag[idx] * carrier.imag[idx]);
+          const imag = signal.real.map((val, idx) => val * carrier.imag[idx] + signal.imag[idx] * carrier.real[idx]);
+          return { real, imag };
+      });
+
+      // Add AWGN using Box-Muller transform
+      function addAWGN(signal, snr) {
+          const noisePower = Math.pow(10, -snr / 10) / 2;
+          const realNoise = signal.real.map(() => Math.sqrt(noisePower) * Math.random());
+          const imagNoise = signal.imag.map(() => Math.sqrt(noisePower) * Math.random());
+          return {
+              real: signal.real.map((val, idx) => val + realNoise[idx]),
+              imag: signal.imag.map((val, idx) => val + imagNoise[idx])
+          };
+      }
+
+      const noisyPassbandSignals = passbandSignals.map(signal => addAWGN(signal, snrBFSK));
+
+      // Prepare data for Plotly
+      const cleanTraces = symbolsBFSK.map((symbol, idx) => ({
+          x: passbandSignals[idx].real,
+          y: passbandSignals[idx].imag,
+          mode: 'markers',
+          type: 'scatter',
+          name: symbol === 0 ? 'No Noise' : '',
+          showlegend: false,
+          marker: { color: 'blue' }
+      }));
+
+      const noisyTraces = symbolsBFSK.map((symbol, idx) => ({
+          x: noisyPassbandSignals[idx].real,
+          y: noisyPassbandSignals[idx].imag,
+          mode: 'markers',
+          type: 'scatter',
+          name: symbol === 0 ? 'Noisy' : '',
+          showlegend: false,
+          marker: { color: 'red' }
+      }));
+
+      const traces = cleanTraces.concat(noisyTraces);
+
+      // Plot Clean and Noisy BFSK Constellations
+      const layout = {
+          title: 'Constellation Diagram of Passband BFSK',
+          xaxis: { title: 'In-phase' },
+          yaxis: { title: 'Quadrature' },
+          showlegend: true,
+          grid: true,
+          width: 650,
+          height: 600
+      };
+
+      Plotly.newPlot('plot', traces, layout);
+    </script>
+  </body>
+</html>
