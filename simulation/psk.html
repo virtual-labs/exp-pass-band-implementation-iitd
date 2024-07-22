@@ -1,0 +1,307 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Virtual Labs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 flex basis-4/5 flex-col">
+            <form id="pskForm">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-4 gap-y-2">
+              <div class=" flex items-center gap-2">
+                <label for="fb" class="text-[#2c99ce] text-md font-medium"
+                  >Baseband Carrier Frequency (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="fb"
+                  name="fb"
+                  value="1"
+                  required
+                />
+              </div>
+              <div class=" flex items-center gap-2">
+                <label for="fc" class="text-[#2c99ce] text-md font-medium"
+                  >Passband Carrier Frequency (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="fc"
+                  name="fc"
+                  value="100"
+                  required
+                />
+              </div>
+            </div>
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-4 gap-y-2">
+              <div class="flex items-center gap-1">
+                <label
+                  for="data"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Input Data (comma-separated):</label
+                >
+                <input
+                  class="lg:ml-3 border border-black px-1 py-1 rounded-sm"
+                  type="text"
+                  id="data"
+                  name="data"
+                  value="0,1,0,1,1,0"
+                  required
+                />
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  type="submit"
+                >
+                  Simulate
+                </button>
+              </div>
+            </div>
+          </form>
+          </div>
+          <div class="flex-1 flex flex-col basis-1/5">
+            <!-- <div class="flex justify-center pt-4">
+              <a href="../bervssnr/PSK_BervsSnr.html">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-4 py-1"
+                >
+                  Generate BERvsSNR  
+                </button>
+              </a>
+            </div> -->
+            <div class="flex justify-center pt-4">
+              <a href="../constellation/psk_constellation.html">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                >
+                  Generate Constellation 
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex w-full items-center gap-2 justify-center max-lg:flex-col">
+            <div id="dataPlot" class="w-full h-[300px]"></div>
+          </div>
+          <div class="flex w-full items-center gap-2 justify-center max-lg:flex-col">
+            <div id="basebandPSKPlot" class="w-full h-[300px]"></div>
+          </div>
+          <div class="flex w-full items-center gap-2 justify-center max-lg:flex-col">
+            <div id="passbandPSKPlot" class="w-full h-[300px]"></div>
+          </div>
+          <div class="flex w-full items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedBasebandPlot" class="w-full h-[300px]"></div>
+          </div>
+          <div class="flex w-full items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedPassbandPlot" class="w-full h-[300px]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('pskForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const dataInput = document.getElementById('data').value.split(',').map(Number);
+          const fb = Number(document.getElementById('fb').value);
+          const fc = Number(document.getElementById('fc').value);
+          generatePSK(dataInput, fb, fc);
+      });
+
+      function generatePSK(data, fb, fc) {
+          const Fs = 1000; // Sampling frequency
+          const T = data.length; // Duration of the signal in seconds
+          const numBits = data.length; // Number of bits in the data
+          const bitDuration = T / numBits; // Duration of each bit in seconds
+          const samplesPerBit = Math.floor(Fs * bitDuration); // Number of samples per bit
+          const t = Array.from({ length: samplesPerBit }, (_, i) => i / Fs); // Time vector for one bit
+
+          // Generate baseband PSK signal (BPSK)
+          let basebandPSK = [];
+          for (const bit of data) {
+              const phaseOffset = bit === 0 ? 0 : Math.PI;
+              basebandPSK = basebandPSK.concat(t.map(time => Math.cos(2 * Math.PI * fb * time + phaseOffset)));
+          }
+
+          // Generate passband PSK signal (BPSK)
+          let passbandPSK = [];
+          for (const bit of data) {
+              const phaseOffset = bit === 0 ? 0 : Math.PI;
+              passbandPSK = passbandPSK.concat(t.map(time => Math.cos(2 * Math.PI * fc * time + phaseOffset)));
+          }
+
+          // Demodulate baseband PSK signal
+          let demodulatedBasebandData = [];
+          for (let i = 0; i < numBits; i++) {
+              const segment = basebandPSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              // Correlate with reference signals
+              const ref0 = t.map(time => Math.cos(2 * Math.PI * fb * time));
+              const ref1 = t.map(time => Math.cos(2 * Math.PI * fb * time + Math.PI));
+              const corr0 = segment.reduce((acc, val, idx) => acc + val * ref0[idx], 0);
+              const corr1 = segment.reduce((acc, val, idx) => acc + val * ref1[idx], 0);
+              // Decide based on correlation
+              if (corr0 > corr1) {
+                  demodulatedBasebandData.push(0);
+              } else {
+                  demodulatedBasebandData.push(1);
+              }
+          }
+
+          // Demodulate passband PSK signal
+          let demodulatedPassbandData = [];
+          for (let i = 0; i < numBits; i++) {
+              const segment = passbandPSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              // Correlate with reference signals
+              const ref0 = t.map(time => Math.cos(2 * Math.PI * fc * time));
+              const ref1 = t.map(time => Math.cos(2 * Math.PI * fc * time + Math.PI));
+              const corr0 = segment.reduce((acc, val, idx) => acc + val * ref0[idx], 0);
+              const corr1 = segment.reduce((acc, val, idx) => acc + val * ref1[idx], 0);
+              // Decide based on correlation
+              if (corr0 > corr1) {
+                  demodulatedPassbandData.push(0);
+              } else {
+                  demodulatedPassbandData.push(1);
+              }
+          }
+
+          // Generate demodulated baseband signal for plotting
+          let demodulatedBasebandSignal = [];
+          for (const bit of demodulatedBasebandData) {
+              demodulatedBasebandSignal = demodulatedBasebandSignal.concat(Array(samplesPerBit).fill(bit));
+          }
+
+          // Generate demodulated passband signal for plotting
+          let demodulatedPassbandSignal = [];
+          for (const bit of demodulatedPassbandData) {
+              demodulatedPassbandSignal = demodulatedPassbandSignal.concat(Array(samplesPerBit).fill(bit));
+          }
+
+          // Plot original data signal
+          const dataPlotData = {
+              x: Array.from({ length: data.length * samplesPerBit }, (_, i) => i / Fs),
+              y: Array.from({ length: data.length * samplesPerBit }, (_, i) => data[Math.floor(i / samplesPerBit)]),
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Original Data Signal'
+          };
+
+          const dataLayout = {
+              title: 'Original Data Signal',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('dataPlot', [dataPlotData], dataLayout);
+
+          // Plot baseband PSK signal
+          const basebandPlotData = {
+              x: Array.from({ length: basebandPSK.length }, (_, i) => i / Fs),
+              y: basebandPSK,
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Baseband PSK Signal'
+          };
+
+          const basebandLayout = {
+              title: 'Baseband PSK Signal',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('basebandPSKPlot', [basebandPlotData], basebandLayout);
+
+          // Plot passband PSK signal
+          const passbandPlotData = {
+              x: Array.from({ length: passbandPSK.length }, (_, i) => i / Fs),
+              y: passbandPSK,
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Passband PSK Signal'
+          };
+
+          const passbandLayout = {
+              title: 'Passband PSK Signal',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('passbandPSKPlot', [passbandPlotData], passbandLayout);
+
+          // Plot demodulated baseband signal
+          const demodulatedBasebandPlotData = {
+              x: Array.from({ length: demodulatedBasebandSignal.length }, (_, i) => i / Fs),
+              y: demodulatedBasebandSignal,
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Demodulated Baseband Data'
+          };
+
+          const demodulatedBasebandLayout = {
+              title: 'Demodulated Baseband Data',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('demodulatedBasebandPlot', [demodulatedBasebandPlotData], demodulatedBasebandLayout);
+
+          // Plot demodulated passband signal
+          const demodulatedPassbandPlotData = {
+              x: Array.from({ length: demodulatedPassbandSignal.length }, (_, i) => i / Fs),
+              y: demodulatedPassbandSignal,
+              type: 'scatter',
+              mode: 'lines',
+              name: 'Demodulated Passband Data'
+          };
+
+          const demodulatedPassbandLayout = {
+              title: 'Demodulated Passband Data',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('demodulatedPassbandPlot', [demodulatedPassbandPlotData], demodulatedPassbandLayout);
+
+          // Log the data to console
+          console.log("Original Data Signal:", data);
+          console.log("Baseband PSK Signal:", basebandPSK);
+          console.log("Passband PSK Signal:", passbandPSK);
+          console.log("Demodulated Baseband Data:", demodulatedBasebandData);
+          console.log("Demodulated Passband Data:", demodulatedPassbandData);
+      }
+
+      // Initial generation with default values
+      generatePSK([0, 1, 0, 1, 1, 0], 1, 100);
+    </script>
+  </body>
+</html>

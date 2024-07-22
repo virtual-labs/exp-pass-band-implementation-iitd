@@ -1,0 +1,226 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Virtual Labs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 flex basis-4/5 flex-col">
+            <form id="askForm">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-4 gap-y-2">
+              <div class="flex items-center gap-1">
+                <label
+                  for="data"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Input Data (comma-separated):</label
+                >
+                <input
+                  class="border border-black px-1 py-1 rounded-sm"
+                  type="text"
+                  id="data"
+                  name="data"
+                  value="0,1,0,1,1,0"
+                  required
+                />
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="fc" class="text-[#2c99ce] text-md font-medium"
+                  >Passband Carrier Frequency (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="fc"
+                  name="fc"
+                  value="100"
+                  required
+                />
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  type="submit"
+                >
+                  Simulate
+                </button>
+              </div>
+            </div>
+          </form>
+          </div>
+          <div class="flex-1  flex items-center gap-2 py-2 flex-col basis-1/5">
+            <!-- <a href="../bervssnr/ASK_BervsSnr.html">
+              <button
+                class="bg-blue-500 text-white rounded-md px-4 py-1"
+              >
+                Generate BERvsSNR
+              </button>
+            </a> -->
+            <div class="flex justify-center pt-4">
+            <a href="../constellation/ask_constellation.html">
+              <button
+                class="bg-blue-500 text-white rounded-md px-2 py-1"
+              >
+                Generate Constellation
+              </button>
+            </a>
+          </div>
+        </div>
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="basebandASK" class="w-[600px] h-[450px]"></div>
+            <div id="passbandASK" class="w-[600px] h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="originalData" class="w-full h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedBasebandData" class="w-full h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedPassbandData" class="w-full h-[450px]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('askForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const dataInput = document.getElementById('data').value.split(',').map(Number);
+          const fc = Number(document.getElementById('fc').value);
+          generateASK(dataInput, fc);
+      });
+
+      function generateASK(data, fc) {
+          // Parameters
+          const Fs = 1000;            // Sampling frequency
+          const T = data.length;      // Duration of the signal in seconds
+          const numBits = data.length;          // Number of bits in the data
+          const bitDuration = T / numBits;  // Duration of each bit in seconds
+          const t = Array.from({ length: Math.floor(bitDuration * Fs) }, (_, i) => i / Fs); // Time vector for one bit
+          const samplesPerBit = t.length; // Number of samples per bit
+
+          // Generate baseband ASK signal
+          let basebandASK = [];
+          for (let bit of data) {
+              if (bit === 0) {
+                  basebandASK = basebandASK.concat(Array(samplesPerBit).fill(0));  // Amplitude 0 for bit 0
+              } else {
+                  basebandASK = basebandASK.concat(Array(samplesPerBit).fill(1));  // Amplitude 1 for bit 1
+              }
+          }
+
+          // Generate passband ASK signal
+          let passbandASK = [];
+          for (let bit of data) {
+              if (bit === 0) {
+                  passbandASK = passbandASK.concat(Array(samplesPerBit).fill(0));  // Amplitude 0 for bit 0
+              } else {
+                  let carrier = [];
+                  for (let n = 0; n < samplesPerBit; n++) {
+                      carrier.push(Math.cos(2 * Math.PI * fc * t[n]));
+                  }
+                  passbandASK = passbandASK.concat(carrier);  // Amplitude 1 (cosine wave) for bit 1
+              }
+          }
+
+          // Demodulate baseband ASK signal
+          let demodulatedBasebandData = [];
+          for (let i = 0; i < numBits; i++) {
+              let segment = basebandASK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              let meanSegment = segment.reduce((sum, val) => sum + val, 0) / segment.length;
+              demodulatedBasebandData.push(meanSegment > 0.5 ? 1 : 0);
+          }
+
+          // Simplified demodulation of passband ASK signal (envelope detection)
+          let demodulatedPassbandData = [];
+          for (let i = 0; i < numBits; i++) {
+              let segment = passbandASK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              let sumSegment = segment.reduce((sum, val) => sum + Math.abs(val), 0);
+              let meanSegment = sumSegment / segment.length;
+              demodulatedPassbandData.push(meanSegment > 0.5 ? 1 : 0);
+          }
+
+          // Plot the signals using Plotly
+          Plotly.newPlot('basebandASK', [{
+              x: Array.from({ length: basebandASK.length }, (_, i) => i / Fs),
+              y: basebandASK,
+              type: 'scatter'
+          }], {
+              title: 'Baseband ASK Signal',
+              xaxis: { title: 'Time (s)' },
+              yaxis: { title: 'Amplitude' }
+          });
+
+          Plotly.newPlot('passbandASK', [{
+              x: Array.from({ length: passbandASK.length }, (_, i) => i / Fs),
+              y: passbandASK,
+              type: 'scatter'
+          }], {
+              title: 'Passband ASK Signal',
+              xaxis: { title: 'Time (s)' },
+              yaxis: { title: 'Amplitude' }
+          });
+
+          Plotly.newPlot('originalData', [
+              {
+                  x: data.map((_, i) => i),
+                  y: data,
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: 'red', size: 8 },
+                  name: 'Original Data'
+              }
+          ], {
+              title: 'Original Data',
+              xaxis: { title: 'Bit Index' },
+              yaxis: { title: 'Bit Value' },
+              showlegend: true
+          });
+
+          Plotly.newPlot('demodulatedBasebandData', [
+              {
+                  x: data.map((_, i) => i),
+                  y: demodulatedBasebandData,
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: 'green', size: 8 },
+                  name: 'Demodulated Baseband Data'
+              }
+          ], {
+              title: 'Demodulated Baseband Data',
+              xaxis: { title: 'Bit Index' },
+              yaxis: { title: 'Bit Value' },
+              showlegend: true
+          });
+
+          Plotly.newPlot('demodulatedPassbandData', [
+              {
+                  x: data.map((_, i) => i),
+                  y: demodulatedPassbandData,
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: 'blue', size: 8 },
+                  name: 'Demodulated Passband Data'
+              }
+          ], {
+              title: 'Demodulated Passband Data',
+              xaxis: { title: 'Bit Index' },
+              yaxis: { title: 'Bit Value' },
+              showlegend: true
+          });
+      }
+
+      // Initialize with default values
+      generateASK([0, 1, 0, 1, 1, 0], 100);
+    </script>
+  </body>
+</html>
