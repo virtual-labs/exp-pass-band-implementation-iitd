@@ -1,0 +1,331 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Virtual Labs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 flex basis-4/5 flex-col">
+            <form id="fskForm">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
+              <div class="flex items-center gap-1">
+                <label
+                  for="data"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Input Data (comma-separated):</label
+                >
+                <input
+                  class=" border border-black px-1 py-1 rounded-sm"
+                  type="text"
+                  id="data"
+                  name="data"
+                  value="0,1,0,1,1,0"
+                  required
+                />
+              </div>
+              <div class=" flex items-center gap-2">
+                <label for="fc" class="text-[#2c99ce] text-md font-medium"
+                  >Passband Carrier Frequency (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="fc"
+                  name="fc"
+                  value="100"
+                  required
+                />
+              </div>
+            </div>
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
+              <div class="flex items-center gap-2">
+                <label for="f1" class="text-[#2c99ce] text-md font-medium"
+                  >Basebad Frequency for '0' (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="f1"
+                  name="f1"
+                  value="1"
+                  required
+                />
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="f2" class="text-[#2c99ce] text-md font-medium"
+                  >Baseband Frequency for '1' (Hz):</label
+                >
+                <input
+                  class="border px-1 border-black py-1 rounded-sm"
+                  type="number"
+                  id="f2"
+                  name="f2"
+                  value="2"
+                  required
+                />
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  type="submit"
+                >
+                  Simulate
+                </button>
+              </div>
+            </div>
+          </form>
+          </div>
+          <div class="flex-1 flex flex-col basis-1/5">
+            <!-- <div class="flex justify-center pt-4">
+              <a href="../bervssnr/FSK_BervsSnr.html">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-4 py-1"
+                >
+                  Generate BERvsSNR  
+                </button>
+              </a>
+            </div> -->
+            <div class="flex justify-center pt-4">
+              <a href="../constellation/fsk_constellation.html">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                >
+                  Generate Constellation 
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="basebandFSKPlot" class="w-[600px] h-[450px]"></div>
+            <div id="passbandFSKPlot" class="w-[600px] h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="dataPlot" class="w-full h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedBasebandPlot" class="w-full h-[450px]"></div>
+          </div>
+          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="demodulatedPassbandPlot" class="w-full h-[450px]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('fskForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const dataInput = document.getElementById('data').value.split(',').map(Number);
+          const f1 = Number(document.getElementById('f1').value);
+          const f2 = Number(document.getElementById('f2').value);
+          const fc = Number(document.getElementById('fc').value);
+          generateFSK(dataInput, f1, f2, fc);
+      });
+
+      function generateFSK(data, f1, f2, fc) {
+          const Fs = 1000; // Sampling frequency
+          const T = data.length; // Duration of the signal in seconds
+          const numBits = data.length; // Number of bits in the data
+          const bitDuration = T / numBits; // Duration of each bit in seconds
+          const t = Array.from({ length: Math.floor(Fs * bitDuration) }, (_, i) => i / Fs); // Time vector for one bit
+          const samplesPerBit = t.length; // Number of samples per bit
+
+          // Generate baseband FSK signal
+          let basebandFSK = [];
+          for (const bit of data) {
+              if (bit === 0) {
+                  basebandFSK.push(...t.map(time => Math.cos(2 * Math.PI * f1 * time)));
+              } else {
+                  basebandFSK.push(...t.map(time => Math.cos(2 * Math.PI * f2 * time)));
+              }
+          }
+
+          // Generate passband FSK signal
+          let passbandFSK = [];
+          for (const bit of data) {
+              if (bit === 0) {
+                  passbandFSK.push(...t.map(time => Math.cos(2 * Math.PI * (fc + f1) * time)));
+              } else {
+                  passbandFSK.push(...t.map(time => Math.cos(2 * Math.PI * (fc + f2) * time)));
+              }
+          }
+
+          // Demodulate baseband FSK signal
+          let demodulatedBasebandData = [];
+          for (let i = 0; i < numBits; i++) {
+              const segment = basebandFSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              const energy_f1 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * f1 * t[idx]), 0);
+              const energy_f2 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * f2 * t[idx]), 0);
+              if (energy_f1 > energy_f2) {
+                  demodulatedBasebandData.push(0);
+              } else {
+                  demodulatedBasebandData.push(1);
+              }
+          }
+
+          // Demodulate passband FSK signal
+          let demodulatedPassbandData = [];
+          for (let i = 0; i < numBits; i++) {
+              const segment = passbandFSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
+              const energy_f1 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * (fc + f1) * t[idx]), 0);
+              const energy_f2 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * (fc + f2) * t[idx]), 0);
+              if (energy_f1 > energy_f2) {
+                  demodulatedPassbandData.push(0);
+              } else {
+                  demodulatedPassbandData.push(1);
+              }
+          }
+
+          // Generate the time vector for the entire signal
+          const fullTime = Array.from({ length: basebandFSK.length }, (_, i) => i / Fs);
+
+          // Generate the time vector for the binary data plot
+          let dataTime = [];
+          let dataSignal = [];
+          for (let i = 0; i < data.length; i++) {
+              dataTime.push(i * bitDuration, (i + 1) * bitDuration);
+              dataSignal.push(data[i], data[i]);
+          }
+
+          // Generate the time vector for the demodulated baseband data plot
+          let demodulatedBasebandTime = [];
+          let demodulatedBasebandSignal = [];
+          for (let i = 0; i < demodulatedBasebandData.length; i++) {
+              demodulatedBasebandTime.push(i * bitDuration, (i + 1) * bitDuration);
+              demodulatedBasebandSignal.push(demodulatedBasebandData[i], demodulatedBasebandData[i]);
+          }
+
+          // Generate the time vector for the demodulated passband data plot
+          let demodulatedPassbandTime = [];
+          let demodulatedPassbandSignal = [];
+          for (let i = 0; i < demodulatedPassbandData.length; i++) {
+              demodulatedPassbandTime.push(i * bitDuration, (i + 1) * bitDuration);
+              demodulatedPassbandSignal.push(demodulatedPassbandData[i], demodulatedPassbandData[i]);
+          }
+
+          // Plot the binary data using Plotly
+          const dataTrace = {
+              x: dataTime,
+              y: dataSignal,
+              mode: 'lines',
+              type: 'scatter',
+              name: 'Data',
+              step: 'post'
+          };
+
+          const dataLayout = {
+              title: 'Original Data',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Value',
+                  tickvals: [0, 1]
+              }
+          };
+
+          Plotly.newPlot('dataPlot', [dataTrace], dataLayout);
+
+          // Plot the baseband FSK signal using Plotly
+          const basebandTrace = {
+              x: fullTime,
+              y: basebandFSK,
+              mode: 'lines',
+              type: 'scatter',
+              name: 'Baseband FSK'
+          };
+
+          const basebandLayout = {
+              title: 'Baseband FSK Signal',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('basebandFSKPlot', [basebandTrace], basebandLayout);
+
+          // Plot the passband FSK signal using Plotly
+          const passbandTrace = {
+              x: fullTime,
+              y: passbandFSK,
+              mode: 'lines',
+              type: 'scatter',
+              name: 'Passband FSK'
+          };
+
+          const passbandLayout = {
+              title: 'Passband FSK Signal',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Amplitude'
+              }
+          };
+
+          Plotly.newPlot('passbandFSKPlot', [passbandTrace], passbandLayout);
+
+          // Plot the demodulated baseband data using Plotly
+          const demodulatedBasebandTrace = {
+              x: demodulatedBasebandTime,
+              y: demodulatedBasebandSignal,
+              mode: 'lines',
+              type: 'scatter',
+              name: 'Demodulated Baseband Data',
+              step: 'post'
+          };
+
+          const demodulatedBasebandLayout = {
+              title: 'Demodulated Baseband Data',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Value',
+                  tickvals: [0, 1]
+              }
+          };
+
+          Plotly.newPlot('demodulatedBasebandPlot', [demodulatedBasebandTrace], demodulatedBasebandLayout);
+
+          // Plot the demodulated passband data using Plotly
+          const demodulatedPassbandTrace = {
+              x: demodulatedPassbandTime,
+              y: demodulatedPassbandSignal,
+              mode: 'lines',
+              type: 'scatter',
+              name: 'Demodulated Passband Data',
+              step: 'post'
+          };
+
+          const demodulatedPassbandLayout = {
+              title: 'Demodulated Passband Data',
+              xaxis: {
+                  title: 'Time (s)'
+              },
+              yaxis: {
+                  title: 'Value',
+                  tickvals: [0, 1]
+              }
+          };
+
+          Plotly.newPlot('demodulatedPassbandPlot', [demodulatedPassbandTrace], demodulatedPassbandLayout);
+      }
+
+      // Initial generation with default values
+      generateFSK([0, 1, 0, 1, 1, 0], 1, 2, 100);
+    </script>
+  </body>
+</html>
