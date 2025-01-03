@@ -1,226 +1,536 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Virtual Labs</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  </head>
-  <body>
-    <!-- sidebar and body -->
-    <div class="flex min-h-[80vh]">
-      <div class="px-6 pb-6 flex-1">
-        <!--  -->
-        <div class="flex">
-          <div class="flex-1 flex basis-4/5 flex-col">
-            <form id="askForm">
-            <div class="flex max-lg:flex-col mt-5 items-center gap-x-4 gap-y-2">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Virtual Labs</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id = "container">
+    <h1>Instructions for Binary Amplitude Shift Keying Modulation (both Baseband and Passband)</h1>
+    <ul>
+        <li>Step 1: Click on 'Generate Message' button to generate input message signal</li>
+        <li>Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
+		<li>Step 3: You can change the carrier signal frequency from the input field</li>
+        <li>Step 4: Click on 'Simulate ASK' button to generate Amplitude Shift Keying Signal</li>
+    </ul>
+<br/>
+
+  <!-- sidebar and body -->
+  <div class="flex min-h-[80vh]">
+    <div class="px-6 pb-6 flex-1">
+      <!--  -->
+      <div class="flex">
+        <div class="flex-1 flex basis-4/5 flex-col">
+          <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
+            <div class="flex-1">
               <div class="flex items-center gap-1">
                 <label
-                  for="data"
+                  for="carrier_frequency"
                   class="text-[#2c99ce] text-md font-medium"
-                  >Input Data (comma-separated):</label
+                  >Carrier Frequency in Hz:</label
                 >
                 <input
-                  class="border border-black px-1 py-1 rounded-sm"
-                  type="text"
-                  id="data"
-                  name="data"
-                  value="0,1,0,1,1,0"
-                  required
-                />
-              </div>
-              <div class="flex items-center gap-2">
-                <label for="fc" class="text-[#2c99ce] text-md font-medium"
-                  >Passband Carrier Frequency (Hz):</label
-                >
-                <input
-                  class="border px-1 border-black py-1 rounded-sm"
+                  class="border w-36 border-black px-1 py-1 rounded-sm"
                   type="number"
-                  id="fc"
-                  name="fc"
-                  value="100"
-                  required
+                  id="carrier_frequency"
+                  value="20"
                 />
               </div>
-              <div class="flex justify-center">
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-1">
+                <label
+                  for="sampling_frequency"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Sampling Frequency in Hz:</label
+                >
+                <input
+                  class="border w-36 border-black px-1 py-1 rounded-sm"
+                  type="number"
+                  id="sampling_frequency"
+                  value="1000"
+                />
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <label
+                  for="num_bits"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Number of Bits:</label
+                >
+                <input
+                  class="border px-1 w-36 border-black py-1 rounded-sm"
+                  type="number"
+                  id="num_bits"
+                  value="100"
+                />
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-1">
+                <label
+                  for="bit_rate"
+                  class="text-[#2c99ce] text-md font-medium"
+                  >Bit Rate in bps:</label
+                >
+                <input
+                  class="border w-36 border-black px-1 py-1 rounded-sm"
+                  type="number"
+                  id="bit_rate"
+                  value="10"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 border-t-2">
+        <div class="flex gap-2">
+          <div class="w-[50%] flex flex-col items-center">
+            <div class="relative my-4 w-[659px] h-[233px]">
+              <!-- buttons -->
+              <div class="absolute top-[132px] left-[5px]">
                 <button
                   class="bg-blue-500 text-white rounded-md px-2 py-1"
                   class="button"
-                  type="submit"
+                  onclick="generateMessageSignal()"
                 >
-                  Simulate
+                  Generate Message
                 </button>
               </div>
+              <div class="absolute top-[234px] left-[220px]">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="generateCarrierSignal()"
+                >
+                  Generate Carrier
+                </button>
+              </div>
+              <div class="absolute top-[112px] right-[55px]">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="simulateASK()"
+                >
+                  Simulate ASK
+                </button>
+              </div>
+              <img
+                src=".././images/simulation/askimg1.png"
+                alt="ask1"
+                class="w-[100%] h-[100%]"
+              />
             </div>
-          </form>
           </div>
-          <div class="flex-1  flex items-center gap-2 py-2 flex-col basis-1/5">
-            <!-- <a href="../bervssnr/ASK_BervsSnr.html">
-              <button
-                class="bg-blue-500 text-white rounded-md px-4 py-1"
-              >
-                Generate BERvsSNR
-              </button>
-            </a> -->
-            <div class="flex justify-center pt-4">
-            <a href="../constellation/ask_constellation.html">
-              <button
-                class="bg-blue-500 text-white rounded-md px-2 py-1"
-              >
-                Generate Constellation
-              </button>
-            </a>
-          </div>
-        </div>
-        </div>
-        <div class="mt-4 border-t-2">
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="basebandASK" class="w-[600px] h-[450px]"></div>
-            <div id="passbandASK" class="w-[600px] h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="originalData" class="w-full h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="demodulatedBasebandData" class="w-full h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="demodulatedPassbandData" class="w-full h-[450px]"></div>
+          <div class="flex w-[48%] flex-col justify-center items-center">
+            <div id="modulated-plot" class="w-[100%]"></div>
+			<div id="baskSignal" class="w-[100%]"></div>
+            <div id="carrier-plot" class="w-[100%]"></div>
+            <div id="plot" class="w-[100%]"></div>
           </div>
         </div>
       </div>
     </div>
-    <script>
-      document.getElementById('askForm').addEventListener('submit', function(event) {
-          event.preventDefault();
-          const dataInput = document.getElementById('data').value.split(',').map(Number);
-          const fc = Number(document.getElementById('fc').value);
-          generateASK(dataInput, fc);
-      });
+  </div>
+  
+  <br/><br/><hr/>
+  
+  <div id = "container">
+    <h1>Instructions for Binary Amplitude Shift Keying (BASK) Demodulation</h1>
+    <ul>
+		<li>Step 1: You can Demodulate the ASK Signal clicking on the 'Demodulate ASK' button</li>
+		<li>Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
+		<li>Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+    </ul>
+</div>	
+  
+  <!-- sidebar and body -->
+  <div class="flex min-h-[80vh]">
+    <div class="px-6 pb-6 flex-1">
+      <div class="flex">
+        <div class="flex-1 flex basis-4/5 flex-col">
+          <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
+            <!-- Input fields -->
 
-      function generateASK(data, fc) {
-          // Parameters
-          const Fs = 1000;            // Sampling frequency
-          const T = data.length;      // Duration of the signal in seconds
-          const numBits = data.length;          // Number of bits in the data
-          const bitDuration = T / numBits;  // Duration of each bit in seconds
-          const t = Array.from({ length: Math.floor(bitDuration * Fs) }, (_, i) => i / Fs); // Time vector for one bit
-          const samplesPerBit = t.length; // Number of samples per bit
+          </div>
+        </div>
+        <div class="flex-1 flex items-center gap-2 py-2 flex-col basis-1/5">
+          <a href="../bervssnr/ASK_BervsSnr.html">
+            <button class="bg-blue-500 text-white rounded-md px-4 py-1">Generate BERvsSNR</button>
+          </a>
+          <a href="../constellation/ask_constellation.html">
+            <button class="bg-blue-500 text-white rounded-md px-2 py-1">Generate Constellation</button>
+          </a>
+        </div>
+      </div>
+      <div class="mt-4 border-t-2">
+        <div class="flex gap-2">
+          <div class="w-[50%] flex flex-col items-center">
+            <div class="relative my-4 w-[659px] h-[233px]">
+              <!-- buttons -->
+              <div class="absolute top-[124px] right-[90px]">
+                <button class="bg-blue-500 text-white rounded-md px-2 py-1" onclick="demodulateASK()">Demodulate ASK</button>
+				
+              </div>
+              <img src=".././images/simulation/askimg2.png" alt="ask1" class="w-[100%] h-[100%]" />
+            </div>
+          </div>
+          <div class="flex w-[48%] flex-col justify-center items-center">
+            <div id="modulated-plot" class="w-[100%]"></div>
+            <div id="carrier-plot" class="w-[100%]"></div>
+            <div id="plot" class="w-[100%]"></div>
+            <div id="demodulated-plot" class="w-[100%]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+	
+	     <script>
+        function checkFrequencies() {
+            // Get values from input fields
+            let carrierFrequency = parseFloat(document.getElementById('carrier_frequency').value);
+            let bit_rate = parseFloat(document.getElementById('bit_rate').value);
+            
+            // Check the frequencies
+            if (carrierFrequency <= bit_rate) {
+                alert("Carrier frequency should be much higher than bit rate.");
+            } else {
+                console.log("Carrier frequency should be much high than bit rate.");
+            }
+        }
 
-          // Generate baseband ASK signal
-          let basebandASK = [];
-          for (let bit of data) {
-              if (bit === 0) {
-                  basebandASK = basebandASK.concat(Array(samplesPerBit).fill(0));  // Amplitude 0 for bit 0
-              } else {
-                  basebandASK = basebandASK.concat(Array(samplesPerBit).fill(1));  // Amplitude 1 for bit 1
-              }
-          }
+        // Function to attach event listeners to all buttons
+        function attachEventListeners() {
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', checkFrequencies);
+            });
+        }
 
-          // Generate passband ASK signal
-          let passbandASK = [];
-          for (let bit of data) {
-              if (bit === 0) {
-                  passbandASK = passbandASK.concat(Array(samplesPerBit).fill(0));  // Amplitude 0 for bit 0
-              } else {
-                  let carrier = [];
-                  for (let n = 0; n < samplesPerBit; n++) {
-                      carrier.push(Math.cos(2 * Math.PI * fc * t[n]));
-                  }
-                  passbandASK = passbandASK.concat(carrier);  // Amplitude 1 (cosine wave) for bit 1
-              }
-          }
+        // Attach event listeners when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', attachEventListeners);
 
-          // Demodulate baseband ASK signal
-          let demodulatedBasebandData = [];
-          for (let i = 0; i < numBits; i++) {
-              let segment = basebandASK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
-              let meanSegment = segment.reduce((sum, val) => sum + val, 0) / segment.length;
-              demodulatedBasebandData.push(meanSegment > 0.5 ? 1 : 0);
-          }
+    </script>
+	
+  <script>
+    let messageSignal = null;
+    let f = null;
+    let m = null;
+    let fs = null;
+    let t2 = null; // Define t2 here to make it accessible globally
+    let bp = null; // Define bp here to make it accessible globally
+    let bitRate = null; // Define bitRate here
 
-          // Simplified demodulation of passband ASK signal (envelope detection)
-          let demodulatedPassbandData = [];
-          for (let i = 0; i < numBits; i++) {
-              let segment = passbandASK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
-              let sumSegment = segment.reduce((sum, val) => sum + Math.abs(val), 0);
-              let meanSegment = sumSegment / segment.length;
-              demodulatedPassbandData.push(meanSegment > 0.5 ? 1 : 0);
-          }
+    function generateMessageSignal() {
+      const num_bits = parseInt(document.getElementById("num_bits").value);
+      fs = parseInt(document.getElementById("sampling_frequency").value);
+      bitRate = parseInt(document.getElementById("bit_rate").value);
+      
+      // Calculate the time period for each bit
+      bp = 1 / bitRate; 
+      
+      messageSignal = [];
+      for (let i = 0; i < num_bits; i++) {
+        messageSignal.push(Math.round(Math.random()));
+      }
+      console.log("Message Signal:", messageSignal);
+      plotOriginalMessage(messageSignal, fs);
+    }
 
-          // Plot the signals using Plotly
-          Plotly.newPlot('basebandASK', [{
-              x: Array.from({ length: basebandASK.length }, (_, i) => i / Fs),
-              y: basebandASK,
-              type: 'scatter'
-          }], {
-              title: 'Baseband ASK Signal',
-              xaxis: { title: 'Time (s)' },
-              yaxis: { title: 'Amplitude' }
-          });
-
-          Plotly.newPlot('passbandASK', [{
-              x: Array.from({ length: passbandASK.length }, (_, i) => i / Fs),
-              y: passbandASK,
-              type: 'scatter'
-          }], {
-              title: 'Passband ASK Signal',
-              xaxis: { title: 'Time (s)' },
-              yaxis: { title: 'Amplitude' }
-          });
-
-          Plotly.newPlot('originalData', [
-              {
-                  x: data.map((_, i) => i),
-                  y: data,
-                  type: 'scatter',
-                  mode: 'markers',
-                  marker: { color: 'red', size: 8 },
-                  name: 'Original Data'
-              }
-          ], {
-              title: 'Original Data',
-              xaxis: { title: 'Bit Index' },
-              yaxis: { title: 'Bit Value' },
-              showlegend: true
-          });
-
-          Plotly.newPlot('demodulatedBasebandData', [
-              {
-                  x: data.map((_, i) => i),
-                  y: demodulatedBasebandData,
-                  type: 'scatter',
-                  mode: 'markers',
-                  marker: { color: 'green', size: 8 },
-                  name: 'Demodulated Baseband Data'
-              }
-          ], {
-              title: 'Demodulated Baseband Data',
-              xaxis: { title: 'Bit Index' },
-              yaxis: { title: 'Bit Value' },
-              showlegend: true
-          });
-
-          Plotly.newPlot('demodulatedPassbandData', [
-              {
-                  x: data.map((_, i) => i),
-                  y: demodulatedPassbandData,
-                  type: 'scatter',
-                  mode: 'markers',
-                  marker: { color: 'blue', size: 8 },
-                  name: 'Demodulated Passband Data'
-              }
-          ], {
-              title: 'Demodulated Passband Data',
-              xaxis: { title: 'Bit Index' },
-              yaxis: { title: 'Bit Value' },
-              showlegend: true
-          });
+    function plotOriginalMessage(messageSignal, fs) {
+      const bit = [];
+      for (let n = 0; n < messageSignal.length; n++) {
+        if (messageSignal[n] === 1) {
+          bit.push(Array(fs).fill(1));
+        } else {
+          bit.push(Array(fs).fill(0));
+        }
+      }
+      const t1 = [];
+      for (let i = 1; i <= fs * messageSignal.length; i++) {
+        t1.push((i * bp) / fs);
       }
 
-      // Initialize with default values
-      generateASK([0, 1, 0, 1, 1, 0], 100);
-    </script>
-  </body>
+      const data = [
+        {
+          x: t1,
+          y: bit.flat(),
+          type: "scatter",
+          mode: "lines",
+          name: "Original Message Signal",
+          line: { color: "red" },
+        },
+      ];
+
+      const annotations = messageSignal.map((bit, index) => ({
+        x: (index + 0.5) * bp, // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
+
+      Plotly.newPlot("plot", data, {
+        title: "Binary Information at Transmitter",
+        annotations: annotations,
+        xaxis: { title: "Time (s)" },
+        yaxis: { title: "Amplitude", range: [-0.2, 1.2] },
+      });
+    }
+
+    function plotBASKSignal() {
+numSymbols = messageSignal.length;
+bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
+    Plotly.newPlot('baskSignal', [{
+        x: bitsf.flatMap((_, idx) => [idx/bitRate, (idx + 1)/bitRate]),
+        y: bitsf.flatMap(val => [val, val]),
+        mode: 'lines',
+        type: 'scatter',
+        marker: { color: 'blue' }
+    }], {
+        title: 'Baseband BASK Modulated Signal',
+        yaxis: { title: 'Volts' }
+    });
+	//document.getElementById('scrolltonrz').scrollIntoView({ behavior: 'smooth' });
+    }
+    function simulateASK() {
+	plotBASKSignal();
+      if (!messageSignal) {
+        console.error("Message signal is not generated yet.");
+        return;
+      }
+
+      fs = parseInt(document.getElementById("sampling_frequency").value);
+      f = parseFloat(document.getElementById("carrier_frequency").value);
+
+      console.log("Binary information at Transmitter:");
+      console.log(messageSignal);
+
+      const bit = [];
+      for (let n = 0; n < messageSignal.length; n++) {
+        if (messageSignal[n] === 1) {
+          bit.push(Array(fs).fill(1));
+        } else {
+          bit.push(Array(fs).fill(0));
+        }
+      }
+      const t1 = [];
+      for (let i = 1; i <= fs * messageSignal.length; i++) {
+        t1.push((i * bp) / fs);
+      }
+
+      const A1 = 10; // Amplitude of carrier signal for information 1
+      const A2 = 0; // Amplitude of carrier signal for information 0
+      t2 = []; // Define t2 here
+      for (let i = 1; i <= fs; i++) {
+        t2.push((i * bp) / (fs - 1));
+      }
+      m = [];
+      for (let i = 0; i < messageSignal.length; i++) {
+        // Declare t and calculate it
+        const t = Array.from({ length: fs }, (_, k) => k / fs);
+        const y =
+          messageSignal[i] === 1
+            ? Array.from(t2, (t2) => A1 * Math.cos(2 * Math.PI * f * t2))
+            : Array.from(t2, (t2) => A2 * Math.cos(2 * Math.PI * f * t2));
+        m.push(y);
+      }
+      const modulatedData = [
+        {
+          x: t1,
+          y: m.flat(),
+          type: "scatter",
+          mode: "lines",
+          name: "ASK Modulated Signal",
+          line: { color: "blue" },
+        },
+      ];
+
+      Plotly.newPlot("modulated-plot", modulatedData, {
+        title: "Passband BASK Modulated Signal",
+      });
+    }
+
+    let isCarrierGenerated = false; // Track if carrier is generated
+    function generateCarrierSignal() {
+      if (isCarrierGenerated) {
+        console.warn("Carrier signal already generated.");
+        return;
+      }
+
+      const fc = parseInt(document.getElementById("carrier_frequency").value);
+      const fs = parseInt(document.getElementById("sampling_frequency").value);
+
+      const carrierAmplitude = 10; // Amplitude of the carrier signal
+      const t = [];
+      const carrier = [];
+
+      // Calculate number of samples for 1 second duration
+      const numSamples = Math.floor(fs);
+
+      for (let i = 0; i < numSamples; i++) {
+        const time = i / fs; // Correct time period for each sample
+        t.push(time);
+        carrier.push(carrierAmplitude * Math.cos(2 * Math.PI * fc * time));
+      }
+
+      const carrierData = [
+        {
+          x: t,
+          y: carrier,
+          type: "scatter",
+          mode: "lines",
+          name: "Carrier Signal",
+          line: { color: "green" },
+        },
+      ];
+
+      Plotly.newPlot("carrier-plot", carrierData, {
+        title: "Carrier Signal (1 Second Duration)",
+      });
+
+      isCarrierGenerated = true; // Set flag to true
+    }
+	
+	function demodulateASK() {
+      if (!messageSignal) {
+        console.error("Message signal is not generated yet.");
+        return;
+      }
+
+      const fc = parseInt(document.getElementById("carrier_frequency").value);
+      const bitRate = parseInt(document.getElementById("bit_rate").value);
+      const bitDuration = 1 / bitRate;
+      const numSamples = Math.floor(fs);
+      const t = Array.from({ length: numSamples }, (_, i) => i / fs);
+
+      const carrier = t.map((time) => Math.cos(2 * Math.PI * fc * time));
+      let modulated_signal = [];
+
+      for (const bit of messageSignal) {
+        if (bit === 1) {
+          modulated_signal = modulated_signal.concat(carrier);
+        } else {
+          modulated_signal = modulated_signal.concat(Array(numSamples).fill(0));
+        }
+      }
+
+      let demodulated_signal = [];
+      const time = [];
+      for (let i = 0; i < messageSignal.length; i++) {
+        const startIndex = i * numSamples;
+        const received = modulated_signal.slice(startIndex, startIndex + numSamples);
+        const product = received.map((sample, index) => sample * carrier[index]);
+        const integral = product.reduce((acc, val) => acc + val, 0) / numSamples; // Normalizing integral
+
+        const threshold = Math.max(...carrier) * 0.5; // Adjust threshold as needed
+
+        if (integral > threshold) {
+          demodulated_signal.push(1);
+        } else {
+          demodulated_signal.push(0);
+        }
+        time.push(i * bitDuration);
+      }
+      console.log("Demodulated Signal:", demodulated_signal);
+
+      const { bitx, tx } = representDigitalSignal(demodulated_signal);
+
+      const demodulatedData = [
+        {
+          x: tx,
+          y: bitx.flat(),
+          type: "scatter",
+          mode: "lines",
+          name: "Demodulated Signal",
+        },
+      ];
+
+      const annotations = demodulated_signal.map((bit, index) => ({
+        x: (index + 0.5) * bitDuration, // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
+
+      const demodulatedLayout = {
+        title: "Demodulated Signal",
+        xaxis: {
+          title: "Time (s)",
+        },
+        yaxis: {
+          title: "Amplitude",
+          range: [-0.2, 1.2]
+        },
+        annotations: annotations,
+      };
+
+      Plotly.newPlot("demodulated-plot", demodulatedData, demodulatedLayout);
+    }
+
+    function representDigitalSignal(bits) {
+      const bitx = [];
+      const bp = 1 / bitRate; // Bit period
+      for (let n = 0; n < bits.length; n++) {
+        if (bits[n] === 1) {
+          bitx.push(Array(fs).fill(1)); // Fill 100 elements with 1
+        } else {
+          bitx.push(Array(fs).fill(0)); // Fill 100 elements with 0
+        }
+      }
+      const tx = [];
+      for (let i = 1; i <= fs * bits.length; i++) {
+        tx.push((i * bp) / fs); // Calculate time instance and push to array
+      }
+      return { bitx, tx }; // Return the digital signal and corresponding time instances
+    }
+  </script>
+  
+  <style>
+  .container {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px 40px;
+    max-width: 1000px; /* Increased max-width to fit three plots side by side */
+    margin: 0 auto; /* Center the container */
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    font-size: 22px; /* Increased font size */
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #e0e7ff;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* Set font size for list items */
+}
+
+li::before {
+    content: "✔";
+    color: #4caf50;
+    margin-right: 10px;
+}
+
+  </style>
+  
+</body>
 </html>
