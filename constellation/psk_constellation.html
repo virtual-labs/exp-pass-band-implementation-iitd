@@ -1,0 +1,218 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.2/math.min.js"></script>
+    <title>Virtual Labs</title>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="flex flex-col">
+        <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-4">
+            <div class="flex items-center gap-1">
+                <label for="numBits">Number of Random Bits:</label>
+                <input
+                class="border border-black px-2 py-1 rounded-sm"
+                type="number"
+                id="numBits"
+                value="100"
+                />
+            </div>
+            <div class="flex items-center gap-1">
+                <label for="snr">Signal-to-Noise Ratio (SNR) in dB:</label>
+                <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="snr"
+                    value="20"
+                />
+                </div>
+        </div>
+          <div class="flex justify-around mt-6 max-lg:flex-col items-center">
+              <div id="constellationDiagram" width="620px" height="450px"></div>
+              <div id="constellationPlot" width="620px" height="450px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Function to generate BPSK modulated signal with AWGN
+      function generateSignal(numBits, snr_dB) {
+        const binaryData = Array.from({ length: numBits }, () => Math.round(Math.random()));
+        const modulatedSignal = binaryData.map(bit => bit === 0 ? -1 : 1);
+        const signalPower = modulatedSignal.reduce((acc, val) => acc + val * val, 0) / numBits;
+        const noisePower = signalPower / (10 ** (snr_dB / 10));
+  
+        const noiseReal = [];
+        const noiseImag = [];
+        for (let i = 0; i < numBits; i++) {
+          const u1 = Math.random();
+          const u2 = Math.random();
+          const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+          const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
+          noiseReal.push(z0 * Math.sqrt(noisePower));
+          noiseImag.push(z1 * Math.sqrt(noisePower));
+        }
+  
+        const noisySignal = [];
+        for (let i = 0; i < numBits; i++) {
+          const real = modulatedSignal[i];
+          const imag = 0;
+          const noiseRealValue = noiseReal[i];
+          const noiseImagValue = noiseImag[i];
+          const noisyReal = real + noiseRealValue;
+          const noisyImag = imag + noiseImagValue;
+          noisySignal.push({ real: noisyReal, imag: noisyImag });
+        }
+  
+        return noisySignal;
+      }
+  
+      // Plot BPSK constellation diagram with noise (Plotly)
+      function plotBPSKConstellation(signal) {
+        const I_noisy = signal.map(point => point.real);
+        const Q_noisy = signal.map(point => point.imag);
+  
+        const traceNoisy = {
+          x: I_noisy,
+          y: Q_noisy,
+          mode: 'markers',
+          type: 'scatter',
+          marker: {
+            size: 10,
+            color: 'red',
+            line: {
+              width: 2,
+            },
+          },
+          name: 'Noisy'
+        };
+  
+        const layout = {
+          title: 'BPSK Constellation with AWGN',
+          xaxis: {
+            title: 'In-phase',
+            range: [-2, 2],
+          },
+          yaxis: {
+            title: 'Quadrature',
+            range: [-2, 2],
+          },
+          showlegend: true,
+          aspectratio: {
+            x: 1,
+            y: 1,
+          },
+          width: 650,
+          height: 550
+        };
+  
+        Plotly.newPlot('constellationDiagram', [traceNoisy], layout);
+      }
+  
+      // Plot passband BPSK constellation diagram with noise (Plotly)
+      function plotPassbandBPSKConstellation() {
+        const Fs = 1000;
+        const Ts = 1 / Fs;
+        const N = 2;
+        const fc = 200;
+        const noiseStdDev = 0.5;
+  
+        const symbols = [1, -1];
+  
+        const t = math.multiply(math.range(0, N), Ts).toArray();
+  
+        const signal = [];
+        for (let i = 0; i < symbols.length; i++) {
+          signal.push(...Array(N).fill(symbols[i]));
+        }
+  
+        const passband_signal = signal.map((s, idx) => math.multiply(s, math.exp(math.complex(0, 2 * Math.PI * fc * t[idx % t.length]))));
+  
+        const I = passband_signal.map(s => math.re(s));
+        const Q = passband_signal.map(s => math.im(s));
+  
+        function generateGaussianNoise(mean, stdDev) {
+          const u1 = Math.random();
+          const u2 = Math.random();
+          const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+          return z0 * stdDev + mean;
+        }
+  
+        const I_noisy = I.map(i => i + generateGaussianNoise(0, noiseStdDev));
+        const Q_noisy = Q.map(q => q + generateGaussianNoise(0, noiseStdDev));
+  
+        const traceNoisy = {
+          x: I_noisy,
+          y: Q_noisy,
+          mode: 'markers',
+          type: 'scatter',
+          marker: {
+            size: 10,
+            color: 'red',
+            line: {
+              width: 2,
+            },
+          },
+          name: 'Noisy'
+        };
+  
+        const traceClean = {
+          x: I,
+          y: Q,
+          mode: 'markers',
+          type: 'scatter',
+          marker: {
+            size: 10,
+            color: 'blue',
+            line: {
+              width: 2,
+            },
+          },
+          name: 'No Noise'
+        };
+  
+        const layout = {
+          title: 'Passband BPSK Constellation with AWGN',
+          xaxis: {
+            title: 'In-phase',
+            range: [-2, 2],
+          },
+          yaxis: {
+            title: 'Quadrature',
+            range: [-2, 2],
+          },
+          showlegend: true,
+          aspectratio: {
+            x: 1,
+            y: 1,
+          },
+          width: 650,
+          height: 550
+        };
+  
+        Plotly.newPlot('constellationPlot', [traceClean, traceNoisy], layout);
+      }
+  
+      // Function to handle input changes and update the plots
+      function handleInputChange() {
+        const numBits = parseInt(document.getElementById('numBits').value);
+        const snr_dB = parseInt(document.getElementById('snr').value);
+        const signal = generateSignal(numBits, snr_dB);
+        plotBPSKConstellation(signal);
+        plotPassbandBPSKConstellation();
+      }
+  
+      // Initial plot
+      handleInputChange();
+  
+      // Attach input change event listeners
+      document.getElementById('numBits').addEventListener('input', handleInputChange);
+      document.getElementById('snr').addEventListener('input', handleInputChange);
+    </script>
+  </body>
+</html>
