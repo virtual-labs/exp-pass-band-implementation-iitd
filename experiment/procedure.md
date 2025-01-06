@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2>1. Input Parameters</h2>
-    <p>To run the BPSK Alamouti scheme simulator, please provide the following input parameters:</p>
-    <ol>
-        <li><strong>Input Bitstream:</strong> Enter a sequence of bits (0s and 1s) to represent the data to be transmitted.</li>
-        <li><strong>SNR (dB):</strong> Specify the signal-to-noise ratio in decibels to simulate noise during transmission.</li>
-    </ol> 
-
-    <h2>2. Running the Simulation</h2>
-    <p>After entering the parameters, follow these steps:</p>
-    <ol>
-        <li>Click the <strong>Run Simulation</strong> button to process the inputs and start the simulation.</li>
-        <li>The simulator will encode the input bitstream using BPSK modulation with the Alamouti scheme and simulate transmission through two antennas over two time slots.</li>
-        <li>Observe the transmission through the channel affected by the specified SNR and the decoding process at the receiver.</li>
-    </ol> 
-
-    <h2>3. Viewing the Results</h2>
-    <p>Once the simulation completes, the following outputs will be displayed:</p>
     <ul>
-        <li>The <strong>received bitstream</strong> decoded by the receiver.</li>
-        <li>The <strong>BER (Bit Error Rate)</strong> for the given input bitstream and SNR.</li>
-        <li>Visual comparisons between the <strong>transmitted and received bitstream</strong>.</li>
-    </ul> 
-
-    <h2>4. Adjusting Parameters</h2>
-    <p>If needed, modify the input bitstream or the SNR value and rerun the simulation to observe the effects of different conditions on the performance of the BPSK Alamouti scheme.</p>
+        <li>
+            <strong>Input Parameters:</strong>
+            <ul>
+                <li><strong>Carrier Frequency:</strong> Use the input field to enter the desired carrier frequency.</li>
+                <li><strong>Sampling Frequency:</strong> Specify the sampling frequency to be used in the simulation.</li>
+                <li><strong>Number of Bits:</strong> Enter the number of bits for the message signal, which will be randomly generated binary bits.</li>
+                <li><strong>Bit Rate in bps:</strong> Define the bit rate (bps) for the signal.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Generate the Message Signal:</strong> 
+            Click the <em>“Generate Message”</em> button to create a random binary message signal based on the specified number of bits.
+        </li>
+        <li>
+            <strong>Generate the Carrier Signal:</strong> 
+            Click the <em>“Generate Carrier”</em> button to generate the carrier wave using the carrier frequency and sampling frequency provided.
+        </li>
+        <li>
+            <strong>Perform Modulation and Demodulation:</strong> 
+            Click the <em>“Simulate" and "Demodulate”</em> button to perform the modulation (ASK, FSK, or PSK) and demodulation process on the randomly generated message signal using the generated carrier.
+        </li>
+        <li>
+            <strong>Plot BER vs. SNR:</strong> 
+            Click the <em>“Generate BER vs. SNR”</em> button to plot the Bit Error Rate (BER) against the Signal-to-Noise Ratio (SNR), providing insights into the system’s performance under varying noise conditions.
+        </li>
+        <li>
+            <strong>Examine Constellation Diagrams:</strong> 
+            Click the <em>“Generate Constellation”</em> button to view the constellation diagrams for the modulated signals. This feature also allows you to observe the effect of noise on the constellation points.
+        </li>
+        <li>
+            <strong>Observe Results:</strong> 
+            Review the generated plots and diagrams to understand the behavior and performance of the modulation schemes. You can make adjustments to the input parameters and repeat the process to explore different scenarios.
+        </li>
+    </ul>
 </body>
 </html>
