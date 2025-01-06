@@ -1,331 +1,430 @@
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Virtual Labs</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  </head>
-  <body>
+</head>
+<body>
+
+<div id = "container">
+    <h1>Instructions for Frequency Shift Keying Modulation (FSK)</h1>
+    <ul>
+        <li>Step 1: Click on 'Generate Message' button to generate input message signal</li>
+        <li>Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
+		<li>Step 3: You can change the carrier signal frequencies from the input fields</li>
+        <li>Step 4: Click on 'Simulate FSK' button to generate Frequency Shift Keying Signal</li>
+    </ul>
+<br/>
     <!-- sidebar and body -->
     <div class="flex min-h-[80vh]">
-      <div class="px-6 pb-6 flex-1">
-        <!--  -->
-        <div class="flex">
-          <div class="flex-1 flex basis-4/5 flex-col">
-            <form id="fskForm">
-            <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
-              <div class="flex items-center gap-1">
-                <label
-                  for="data"
-                  class="text-[#2c99ce] text-md font-medium"
-                  >Input Data (comma-separated):</label
-                >
-                <input
-                  class=" border border-black px-1 py-1 rounded-sm"
-                  type="text"
-                  id="data"
-                  name="data"
-                  value="0,1,0,1,1,0"
-                  required
-                />
-              </div>
-              <div class=" flex items-center gap-2">
-                <label for="fc" class="text-[#2c99ce] text-md font-medium"
-                  >Passband Carrier Frequency (Hz):</label
-                >
-                <input
-                  class="border px-1 border-black py-1 rounded-sm"
-                  type="number"
-                  id="fc"
-                  name="fc"
-                  value="100"
-                  required
-                />
-              </div>
+        <div class="px-6 pb-6 flex-1">
+            <div class="flex">
+                <div class="flex-1 basis-3/4 flex flex-col">
+                    <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <label for="carrier_frequency1" class="text-[#2c99ce] font-medium">Carrier Frequency 1 in Hz:</label>
+                                <input class="border ml-2 border-black px-2 py-1 rounded-sm" type="number" id="carrier_frequency1" value="20" />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <label for="carrier_frequency2" class="text-[#2c99ce] font-medium">Carrier Frequency 2 in Hz:</label>
+                                <input class="border border-black px-2 py-1 rounded-sm" type="number" id="carrier_frequency2" value="100" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <label for="sampling_frequency" class="text-[#2c99ce] font-medium">Sampling Frequency in Hz:</label>
+                                <input class="border border-black px-2 py-1 rounded-sm" type="number" id="sampling_frequency" value="1000" />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <label for="bit_rate" class="text-[#2c99ce] font-medium">Bit Rate (bps):</label>
+                                <input class="border px-2 ml-[72px] border-black py-1 rounded-sm" type="number" id="bit_rate" value="10" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="flex max-lg:flex-col mt-5 items-center gap-x-2 gap-y-2">
-              <div class="flex items-center gap-2">
-                <label for="f1" class="text-[#2c99ce] text-md font-medium"
-                  >Basebad Frequency for '0' (Hz):</label
-                >
-                <input
-                  class="border px-1 border-black py-1 rounded-sm"
-                  type="number"
-                  id="f1"
-                  name="f1"
-                  value="1"
-                  required
-                />
-              </div>
-              <div class="flex items-center gap-2">
-                <label for="f2" class="text-[#2c99ce] text-md font-medium"
-                  >Baseband Frequency for '1' (Hz):</label
-                >
-                <input
-                  class="border px-1 border-black py-1 rounded-sm"
-                  type="number"
-                  id="f2"
-                  name="f2"
-                  value="2"
-                  required
-                />
-              </div>
-              <div class="flex justify-center">
-                <button
-                  class="bg-blue-500 text-white rounded-md px-2 py-1"
-                  class="button"
-                  type="submit"
-                >
-                  Simulate
-                </button>
-              </div>
+            <div class="mt-4 border-t-2">
+                <div class="flex flex-col">
+                    <div class="flex gap-1">
+                        <div class="flex w-[50%] flex-col items-center">
+                            <div class="relative my-4 w-[600px] h-[150px]">
+                                <!-- buttons -->
+                                <div class="absolute top-[102px] left-[0px]">
+                                    <button class="bg-blue-500 text-white rounded-md px-2 py-1" class="button" onclick="generateMessageSignal()">Generate Message</button>
+                                </div>
+                                <div class="absolute top-[130px] left-[184px]">
+                                    <button class="bg-blue-500 text-sm text-white rounded-md px-2 py-1" class="button" onclick="generateCarrierSignal()">Generate Carrier 1</button>
+                                </div>
+                                <div class="absolute top-[165px] left-[184px]">
+                                    <button class="bg-blue-500 text-sm text-white rounded-md px-2 py-1" class="button" onclick="generateCarrierSignal2()">Generate Carrier 2</button>
+                                </div>
+                                <div class="absolute top-[132px] right-[75px]">
+                                    <button class="bg-blue-500 text-white rounded-md px-2 py-1" class="button" onclick="simulateFSK()">Simulate FSK</button>
+                                </div>
+                                <img class="w-[100%] h-[100%]" src=".././images/simulation/fskimg1.png" alt="fsk1" />
+                            </div>
+                        </div>
+                        <div class="flex w-[50%] flex-col justify-center items-center">
+                            <div id="modulated-plot"></div>
+                            <div id="carrier-plot2"></div>
+                            <div id="carrier-plot"></div>
+                            <div id="original"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </form>
-          </div>
-          <div class="flex-1 flex flex-col basis-1/5">
-            <!-- <div class="flex justify-center pt-4">
-              <a href="../bervssnr/FSK_BervsSnr.html">
-                <button
-                  class="bg-blue-500 text-white rounded-md px-4 py-1"
-                >
-                  Generate BERvsSNR  
-                </button>
-              </a>
-            </div> -->
-            <div class="flex justify-center pt-4">
-              <a href="../constellation/fsk_constellation.html">
-                <button
-                  class="bg-blue-500 text-white rounded-md px-2 py-1"
-                >
-                  Generate Constellation 
-                </button>
-              </a>
-            </div>
-          </div>
         </div>
-        <div class="mt-4 border-t-2">
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="basebandFSKPlot" class="w-[600px] h-[450px]"></div>
-            <div id="passbandFSKPlot" class="w-[600px] h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="dataPlot" class="w-full h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="demodulatedBasebandPlot" class="w-full h-[450px]"></div>
-          </div>
-          <div class="flex items-center gap-2 justify-center max-lg:flex-col">
-            <div id="demodulatedPassbandPlot" class="w-full h-[450px]"></div>
-          </div>
-        </div>
-      </div>
     </div>
-    <script>
-      document.getElementById('fskForm').addEventListener('submit', function(event) {
-          event.preventDefault();
-          const dataInput = document.getElementById('data').value.split(',').map(Number);
-          const f1 = Number(document.getElementById('f1').value);
-          const f2 = Number(document.getElementById('f2').value);
-          const fc = Number(document.getElementById('fc').value);
-          generateFSK(dataInput, f1, f2, fc);
-      });
 
-      function generateFSK(data, f1, f2, fc) {
-          const Fs = 1000; // Sampling frequency
-          const T = data.length; // Duration of the signal in seconds
-          const numBits = data.length; // Number of bits in the data
-          const bitDuration = T / numBits; // Duration of each bit in seconds
-          const t = Array.from({ length: Math.floor(Fs * bitDuration) }, (_, i) => i / Fs); // Time vector for one bit
-          const samplesPerBit = t.length; // Number of samples per bit
+    <br /><br /><hr />
+	  <div id = "container">
+    <h1>Instructions for Frequency Shift Keying (FSK) Demodulation</h1>
+    <ul>
+		<li>Step 1: You can Demodulate the FSK Signal clicking on the 'Demodulate FSK' button</li>
+		<li>Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
+		<li>Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+    </ul>
+</div>	
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+        <div class="px-6 pb-6 flex-1">
+            <!--  -->
+            <div class="flex flex-col">
+                <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+                 <div class="flex-1 flex flex-col basis-1/4">
+                    <div class="flex justify-end pt-4">
+                        <a href="../bervssnr/FSK_BervsSnr.html">
+                            <button class="bg-blue-500 text-white rounded-md px-4 py-1">Generate BERvsSNR</button>
+                        </a>
+                    </div>
+                    <div class="flex justify-end pt-4">
+                        <a href="../constellation/fsk_constellation.html">
+                            <button class="bg-blue-500 text-white rounded-md px-2 py-1">Generate Constellation</button>
+                        </a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="mt-4 border-t-2">
+                <div class="flex flex-col">
+                    <div class="flex justify-center pt-4">
+                        <button class="bg-blue-500 text-white rounded-md px-2 py-1" class="button" onclick="demodulateFSK()">Demodulate FSK</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="">
+                                <img src=".././images/simulation/fskimg2.png" alt="fsk2" />
+                            </div>
+                        </div>
+                        <div class="flex flex-1 flex-col justify-center items-center">
+                            <div id="demodulated-plot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-          // Generate baseband FSK signal
-          let basebandFSK = [];
-          for (const bit of data) {
-              if (bit === 0) {
-                  basebandFSK.push(...t.map(time => Math.cos(2 * Math.PI * f1 * time)));
-              } else {
-                  basebandFSK.push(...t.map(time => Math.cos(2 * Math.PI * f2 * time)));
-              }
-          }
 
-          // Generate passband FSK signal
-          let passbandFSK = [];
-          for (const bit of data) {
-              if (bit === 0) {
-                  passbandFSK.push(...t.map(time => Math.cos(2 * Math.PI * (fc + f1) * time)));
-              } else {
-                  passbandFSK.push(...t.map(time => Math.cos(2 * Math.PI * (fc + f2) * time)));
-              }
-          }
+<script>
+    function checkFrequencies() {
+        // Get values from input fields
+        let carrierFrequency1 = parseFloat(document.getElementById('carrier_frequency1').value);
+        let carrierFrequency2 = parseFloat(document.getElementById('carrier_frequency2').value);
+        let bitRate = parseFloat(document.getElementById('bit_rate').value);
+        
+        // Check the carrier frequency vs. bit rate
+        if (carrierFrequency1 <= bitRate) {
+            alert("Carrier frequency 1 should be much higher than bit rate.");
+            return; // Exit if the condition is not met
+        }
 
-          // Demodulate baseband FSK signal
-          let demodulatedBasebandData = [];
-          for (let i = 0; i < numBits; i++) {
-              const segment = basebandFSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
-              const energy_f1 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * f1 * t[idx]), 0);
-              const energy_f2 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * f2 * t[idx]), 0);
-              if (energy_f1 > energy_f2) {
-                  demodulatedBasebandData.push(0);
-              } else {
-                  demodulatedBasebandData.push(1);
-              }
-          }
+        // Check the second carrier frequency vs. the first carrier frequency
+        if (carrierFrequency2 <= carrierFrequency1) {
+            alert("Carrier frequency 2 should be higher than Carrier frequency 1.");
+            return; // Exit if the condition is not met
+        }
 
-          // Demodulate passband FSK signal
-          let demodulatedPassbandData = [];
-          for (let i = 0; i < numBits; i++) {
-              const segment = passbandFSK.slice(i * samplesPerBit, (i + 1) * samplesPerBit);
-              const energy_f1 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * (fc + f1) * t[idx]), 0);
-              const energy_f2 = segment.reduce((acc, val, idx) => acc + val * Math.cos(2 * Math.PI * (fc + f2) * t[idx]), 0);
-              if (energy_f1 > energy_f2) {
-                  demodulatedPassbandData.push(0);
-              } else {
-                  demodulatedPassbandData.push(1);
-              }
-          }
+        // If all conditions are met
+        console.log("Carrier frequency 1 is much higher than bit rate.");
+        console.log("Carrier frequency 2 is higher than Carrier frequency 1.");
+    }
 
-          // Generate the time vector for the entire signal
-          const fullTime = Array.from({ length: basebandFSK.length }, (_, i) => i / Fs);
+    // Function to attach event listeners to all buttons
+    function attachEventListeners() {
+        let buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('click', checkFrequencies);
+        });
+    }
 
-          // Generate the time vector for the binary data plot
-          let dataTime = [];
-          let dataSignal = [];
-          for (let i = 0; i < data.length; i++) {
-              dataTime.push(i * bitDuration, (i + 1) * bitDuration);
-              dataSignal.push(data[i], data[i]);
-          }
+    // Attach event listeners when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', attachEventListeners);
+</script>
 
-          // Generate the time vector for the demodulated baseband data plot
-          let demodulatedBasebandTime = [];
-          let demodulatedBasebandSignal = [];
-          for (let i = 0; i < demodulatedBasebandData.length; i++) {
-              demodulatedBasebandTime.push(i * bitDuration, (i + 1) * bitDuration);
-              demodulatedBasebandSignal.push(demodulatedBasebandData[i], demodulatedBasebandData[i]);
-          }
+	
+<script>
+    let isGenerated1 = false; // Flag to check if first carrier signal is generated
+    let isGenerated2 = false; // Flag to check if second carrier signal is generated
+    let bits, modulated_signal;
 
-          // Generate the time vector for the demodulated passband data plot
-          let demodulatedPassbandTime = [];
-          let demodulatedPassbandSignal = [];
-          for (let i = 0; i < demodulatedPassbandData.length; i++) {
-              demodulatedPassbandTime.push(i * bitDuration, (i + 1) * bitDuration);
-              demodulatedPassbandSignal.push(demodulatedPassbandData[i], demodulatedPassbandData[i]);
-          }
+    function generateCarrierSignal() {
+        const carrierFrequency = parseInt(document.getElementById("carrier_frequency1").value); // Hz
+        const samplingFrequency = parseInt(document.getElementById("sampling_frequency").value); // Hz
+        const durationInSeconds = 1; // Duration of 1 second
 
-          // Plot the binary data using Plotly
-          const dataTrace = {
-              x: dataTime,
-              y: dataSignal,
-              mode: 'lines',
-              type: 'scatter',
-              name: 'Data',
-              step: 'post'
-          };
+        const numSamples = Math.floor(samplingFrequency * durationInSeconds);
+        const t = Array.from({ length: numSamples }, (_, i) => i / samplingFrequency);
 
-          const dataLayout = {
-              title: 'Original Data',
-              xaxis: {
-                  title: 'Time (s)'
-              },
-              yaxis: {
-                  title: 'Value',
-                  tickvals: [0, 1]
-              }
-          };
+        const carrierSignal = t.map((time) => Math.sin(2 * Math.PI * carrierFrequency * time));
 
-          Plotly.newPlot('dataPlot', [dataTrace], dataLayout);
+        // Plot carrier signal 1
+        const traceCarrier1 = {
+            x: t,
+            y: carrierSignal,
+            mode: "lines",
+            name: "Carrier Signal 1",
+        };
 
-          // Plot the baseband FSK signal using Plotly
-          const basebandTrace = {
-              x: fullTime,
-              y: basebandFSK,
-              mode: 'lines',
-              type: 'scatter',
-              name: 'Baseband FSK'
-          };
+        const layoutCarrier1 = {
+            title: "Carrier Signal 1",
+            xaxis: { title: "Time (s)" },
+            yaxis: { title: "Amplitude" },
+        };
 
-          const basebandLayout = {
-              title: 'Baseband FSK Signal',
-              xaxis: {
-                  title: 'Time (s)'
-              },
-              yaxis: {
-                  title: 'Amplitude'
-              }
-          };
+        Plotly.newPlot("carrier-plot", [traceCarrier1], layoutCarrier1);
+        isGenerated1 = true;
+    }
 
-          Plotly.newPlot('basebandFSKPlot', [basebandTrace], basebandLayout);
+    function generateCarrierSignal2() {
+        const carrierFrequency2 = parseInt(document.getElementById("carrier_frequency2").value); // Hz
+        const samplingFrequency2 = parseInt(document.getElementById("sampling_frequency").value); // Hz
+        const durationInSeconds = 1; // Duration of 1 second
 
-          // Plot the passband FSK signal using Plotly
-          const passbandTrace = {
-              x: fullTime,
-              y: passbandFSK,
-              mode: 'lines',
-              type: 'scatter',
-              name: 'Passband FSK'
-          };
+        const numSamples2 = Math.floor(samplingFrequency2 * durationInSeconds);
+        const t2 = Array.from({ length: numSamples2 }, (_, i) => i / samplingFrequency2);
 
-          const passbandLayout = {
-              title: 'Passband FSK Signal',
-              xaxis: {
-                  title: 'Time (s)'
-              },
-              yaxis: {
-                  title: 'Amplitude'
-              }
-          };
+        const carrierSignal2 = t2.map((time) => Math.sin(2 * Math.PI * carrierFrequency2 * time));
 
-          Plotly.newPlot('passbandFSKPlot', [passbandTrace], passbandLayout);
+        // Plot carrier signal 2
+        const traceCarrier2 = {
+            x: t2,
+            y: carrierSignal2,
+            mode: "lines",
+            name: "Carrier Signal 2",
+        };
 
-          // Plot the demodulated baseband data using Plotly
-          const demodulatedBasebandTrace = {
-              x: demodulatedBasebandTime,
-              y: demodulatedBasebandSignal,
-              mode: 'lines',
-              type: 'scatter',
-              name: 'Demodulated Baseband Data',
-              step: 'post'
-          };
+        const layoutCarrier2 = {
+            title: "Carrier Signal 2",
+            xaxis: { title: "Time (s)" },
+            yaxis: { title: "Amplitude" },
+        };
 
-          const demodulatedBasebandLayout = {
-              title: 'Demodulated Baseband Data',
-              xaxis: {
-                  title: 'Time (s)'
-              },
-              yaxis: {
-                  title: 'Value',
-                  tickvals: [0, 1]
-              }
-          };
+        Plotly.newPlot("carrier-plot2", [traceCarrier2], layoutCarrier2);
+        isGenerated2 = true;
+    }
 
-          Plotly.newPlot('demodulatedBasebandPlot', [demodulatedBasebandTrace], demodulatedBasebandLayout);
+    function generateMessageSignal() {
+        const samplingFrequency = parseInt(document.getElementById("sampling_frequency").value);
+        const bitRate = parseInt(document.getElementById("bit_rate").value);
+        const durationInSeconds = 1; // Duration of 1 second
+        const numBits = Math.floor(durationInSeconds * bitRate);
 
-          // Plot the demodulated passband data using Plotly
-          const demodulatedPassbandTrace = {
-              x: demodulatedPassbandTime,
-              y: demodulatedPassbandSignal,
-              mode: 'lines',
-              type: 'scatter',
-              name: 'Demodulated Passband Data',
-              step: 'post'
-          };
+        // Generate random bits (0 or 1)
+        bits = Array.from({ length: numBits }, () => Math.round(Math.random()));
 
-          const demodulatedPassbandLayout = {
-              title: 'Demodulated Passband Data',
-              xaxis: {
-                  title: 'Time (s)'
-              },
-              yaxis: {
-                  title: 'Value',
-                  tickvals: [0, 1]
-              }
-          };
+        // Convert bits to time-domain signal
+        const numSamplesPerBit = Math.floor(samplingFrequency / bitRate);
+        const messageSignal = bits.flatMap((bit) =>
+            Array.from({ length: numSamplesPerBit }, () => bit) // Amplitude of 1 for bit 1, and 0 for bit 0
+        );
 
-          Plotly.newPlot('demodulatedPassbandPlot', [demodulatedPassbandTrace], demodulatedPassbandLayout);
-      }
+        const numSamples = messageSignal.length;
+        const t = Array.from({ length: numSamples }, (_, i) => i / samplingFrequency);
 
-      // Initial generation with default values
-      generateFSK([0, 1, 0, 1, 1, 0], 1, 2, 100);
-    </script>
-  </body>
+        // Plot message signal
+        const traceMessage = {
+            x: t,
+            y: messageSignal,
+            mode: "lines",
+            name: "Message Signal",
+            text: bits.map((bit, index) => ({
+                x: (index + 0.5) * (1 / bitRate),
+                y: 1.1, // Adjust text position above the plot
+                text: bit.toString(),
+                showarrow: false,
+                font: { size: 12, color: bit === 1 ? 'green' : 'red' },
+            })),
+            textposition: 'top center',
+        };
+
+        const layoutMessage = {
+            title: "Message Signal",
+            xaxis: { title: "Time (s)" },
+            yaxis: { title: "Amplitude" },
+        };
+
+        Plotly.newPlot("original", [traceMessage], layoutMessage);
+    }
+
+    function simulateFSK() {
+        if (!isGenerated1 || !isGenerated2) {
+            alert("Please generate both carrier signals first.");
+            return;
+        }
+
+        const carrierFrequency = parseInt(document.getElementById("carrier_frequency1").value); // Hz
+        const carrierFrequency2 = parseInt(document.getElementById("carrier_frequency2").value); // Hz
+        const samplingFrequency = parseInt(document.getElementById("sampling_frequency").value); // Hz
+        const bitRate = parseInt(document.getElementById("bit_rate").value);
+
+        const durationInSeconds = 1; // Duration of 1 second
+        const numSamples = Math.floor(samplingFrequency * durationInSeconds);
+        const t = Array.from({ length: numSamples }, (_, i) => i / samplingFrequency);
+
+        const numSamplesPerBit = Math.floor(samplingFrequency / bitRate);
+
+        modulated_signal = [];
+
+        for (let i = 0; i < bits.length; i++) {
+            const carrierFrequencyToUse = bits[i] === 1 ? carrierFrequency : carrierFrequency2;
+            for (let j = 0; j < numSamplesPerBit; j++) {
+                const timeIndex = i * numSamplesPerBit + j;
+                modulated_signal.push(
+                    Math.sin(2 * Math.PI * carrierFrequencyToUse * t[timeIndex])
+                );
+            }
+        }
+
+        const traceModulated = {
+            x: t,
+            y: modulated_signal,
+            mode: "lines",
+            name: "Modulated Signal",
+        };
+
+        const layoutModulated = {
+            title: "FSK Modulated Signal",
+            xaxis: { title: "Time (s)" },
+            yaxis: { title: "Amplitude" },
+        };
+
+        Plotly.newPlot("modulated-plot", [traceModulated], layoutModulated);
+    }
+
+    function demodulateFSK() {
+        if (!modulated_signal || modulated_signal.length === 0) {
+            alert("Please simulate FSK modulation first.");
+            return;
+        }
+
+        const samplingFrequency = parseInt(document.getElementById("sampling_frequency").value);
+        const bitRate = parseInt(document.getElementById("bit_rate").value);
+        const carrierFrequency = parseInt(document.getElementById("carrier_frequency1").value); // Retrieve carrier frequency
+        const carrierFrequency2 = parseInt(document.getElementById("carrier_frequency2").value); // Retrieve carrier frequency 2
+        const numSamplesPerBit = Math.floor(samplingFrequency / bitRate);
+        const numBits = Math.floor(modulated_signal.length / numSamplesPerBit);
+        const demodulated_bits = [];
+
+        for (let i = 0; i < numBits; i++) {
+            let sum1 = 0;
+            let sum2 = 0;
+
+            for (let j = 0; j < numSamplesPerBit; j++) {
+                const timeIndex = i * numSamplesPerBit + j;
+                sum1 += modulated_signal[timeIndex] * Math.sin(2 * Math.PI * carrierFrequency * timeIndex / samplingFrequency);
+                sum2 += modulated_signal[timeIndex] * Math.sin(2 * Math.PI * carrierFrequency2 * timeIndex / samplingFrequency);
+            }
+
+            if (sum1 > sum2) {
+                demodulated_bits.push(1);
+            } else {
+                demodulated_bits.push(0);
+            }
+        }
+
+        // Convert demodulated bits back to time-domain signal
+        const demodulatedSignal = demodulated_bits.flatMap((bit) =>
+            Array.from({ length: numSamplesPerBit }, () => bit) // Amplitude of 1 for bit 1, and 0 for bit 0
+        );
+
+        const numSamples = demodulatedSignal.length;
+        const t = Array.from({ length: numSamples }, (_, i) => i / samplingFrequency);
+
+        // Plot demodulated signal
+        const traceDemodulated = {
+            x: t,
+            y: demodulatedSignal,
+            mode: "lines",
+            name: "Demodulated Signal",
+            text: demodulated_bits.map((bit, index) => ({
+                x: (index + 0.5) * (1 / bitRate),
+                y: 1.1, // Adjust text position above the plot
+                text: bit.toString(),
+                showarrow: false,
+                font: { size: 12, color: bit === 1 ? 'green' : 'red' },
+            })),
+            textposition: 'top center',
+        };
+
+        const layoutDemodulated = {
+            title: "FSK Demodulated Signal",
+            xaxis: { title: "Time (s)" },
+            yaxis: { title: "Amplitude" },
+        };
+
+        Plotly.newPlot("demodulated-plot", [traceDemodulated], layoutDemodulated);
+    }
+</script>
+
+  <style>
+  .container {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px 40px;
+    max-width: 1000px; /* Increased max-width to fit three plots side by side */
+    margin: 0 auto; /* Center the container */
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    font-size: 22px; /* Increased font size */
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #e0e7ff;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* Set font size for list items */
+}
+
+li::before {
+    content: "✔";
+    color: #4caf50;
+    margin-right: 10px;
+}
+
+  </style>
+  
+</body>
 </html>
