@@ -5,163 +5,187 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Virtual Labs</title>
+    <script>
+      let signalChart;
+      let originalSignalChart;
+
+      function generateSignal() {
+        const numBits = parseInt(document.getElementById("numBits").value);
+        const SNR_dB = parseFloat(document.getElementById("snr").value);
+
+        // Clear existing charts
+        if (signalChart) {
+          signalChart.destroy();
+        }
+        if (originalSignalChart) {
+          originalSignalChart.destroy();
+        }
+
+        // Generate random 1 or -1
+        function randomOneMinusOne() {
+          return Math.random() < 0.5 ? -1 : 1;
+        }
+
+        // Generate a random modulated signal
+        const modulatedSignal = new Array(numBits)
+          .fill()
+          .map(randomOneMinusOne);
+
+        console.log("Random Modulated Signal:", modulatedSignal);
+
+        // Additive White Gaussian Noise (AWGN) parameters
+        const SNR_linear = 10 ** (SNR_dB / 10); // Convert SNR from dB to linear scale
+        const sigma = Math.sqrt(1 / (2 * SNR_linear)); // Standard deviation of noise
+
+        // Generate AWGN using Box-Muller method
+        const noise_I = modulatedSignal.map(() => sigma * standardNormal()); // In-phase component of noise
+        const noise_Q = modulatedSignal.map(() => sigma * standardNormal()); // Quadrature component of noise
+
+        // Add noise to the modulated signal
+        const noisyModulatedSignal = modulatedSignal.map(
+          (value, index) => value + noise_Q[index]
+        );
+        console.log("Noisy Modulated Signal:", noisyModulatedSignal);
+
+        // Plot Noisy Modulated Signal
+        const canvas = document.getElementById("signalCanvas");
+        const ctx = canvas.getContext("2d");
+
+        signalChart = new Chart(ctx, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Noisy Modulated Signal (ASK)",
+                data: noisyModulatedSignal.map((value, index) => ({
+                  x: value,
+                  y: 0,
+                })),
+                borderColor: "red",
+                borderWidth: 1,
+                pointBackgroundColor: "red",
+                pointBorderColor: "red",
+                pointRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: false, // Prevents automatic resizing
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "Real (Q)",
+                },
+              },
+              y: {
+                display: true,
+				text: "Imaginary (I)",
+              },
+            },
+          },
+        });
+
+        // Plot Constellation Diagram of Original Modulated Signal (without noise)
+        const originalSignalCanvas = document.getElementById(
+          "originalSignalCanvas"
+        );
+        const originalSignalCtx = originalSignalCanvas.getContext("2d");
+
+        originalSignalChart = new Chart(originalSignalCtx, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Original Modulated Signal (ASK)",
+                data: modulatedSignal.map((value, index) => ({
+                  x: value,
+                  y: 0,
+                })),
+                borderColor: "blue",
+                borderWidth: 1,
+                pointBackgroundColor: "blue",
+                pointBorderColor: "blue",
+                pointRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: false, // Prevents automatic resizing
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "Real (Q)",
+                },
+              },
+              y: {
+                display: true,
+				                  text: "Imaginay (I)",
+              },
+            },
+          },
+        });
+      }
+
+      // Function to generate standard normal random variables using Box-Muller method
+      function standardNormal() {
+        let u1, u2;
+        do {
+          u1 = Math.random();
+          u2 = Math.random();
+        } while (u1 === 0);
+        const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        return z0;
+      }
+    </script>
   </head>
   <body>
     <!-- sidebar and body -->
     <div class="flex min-h-[80vh]">
       <div class="px-6 pb-6 mt-1 flex-1">
         <div class="flex flex-col">
-        <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-4">
+          <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-4">
             <div class="flex items-center gap-1">
-                <label for="numBits">Number of Random Bits:</label>
-                <input
+              <label for="numBits">Number of Random Bits:</label>
+              <input
                 class="border border-black px-2 py-1 rounded-sm"
                 type="number"
                 id="numBits"
                 value="100"
-                min="1"
-                />
+              />
             </div>
             <div class="flex items-center gap-1">
-                <label for="snrDb">Signal-to-Noise Ratio (SNR) in dB:</label>
-                <input
-                    class="border border-black px-2 py-1 rounded-sm"
-                    type="number"
-                    id="snrDb"
-                    value="30"
-                />
-                </div>
-                <div class="flex ">
-                  <button
-                    class="bg-blue-500 text-white rounded-md px-2 py-1"
-                    class="button"
-                    onclick="generateConstellations()"
-                  >
-                      Generate Constellation
-                  </button>
-                </div>
-        </div>
-          <div class="  flex justify-around mt-6 max-lg:flex-col items-center">
-              <canvas id="basebandChart" width="650px" height="450px"></canvas>
-              <canvas id="passbandChart" width="650px" height="450px"></canvas>
+              <label for="snr">Signal-to-Noise Ratio (SNR) in dB:</label>
+              <input
+                class="border border-black px-2 py-1 rounded-sm"
+                type="number"
+                id="snr"
+                value="10"
+              />
+            </div>
+            <div class="flex">
+              <button
+                class="bg-blue-500 text-white rounded-md px-2 py-1"
+                class="button"
+                onclick="generateSignal()"
+              >
+                Generate Constellation Diagrams
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-center mt-2">
+            <canvas
+              id="originalSignalCanvas"
+              width="600px"
+              height="450px"
+            ></canvas>
+            <canvas id="signalCanvas" width="600px" height="450px"></canvas>
           </div>
         </div>
       </div>
     </div>
-    <script>
-      let basebandChart;
-      let passbandChart;
-      
-      function generateConstellations() {
-          // Get user inputs
-          const N = parseInt(document.getElementById('numBits').value, 10); // Number of bits
-          const EbNo_dB = parseFloat(document.getElementById('snrDb').value); // SNR in dB
-      
-          // Parameters
-          const M = 2; // Binary ASK
-          const k = Math.log2(M); // Bits per symbol
-          const fs = 1000; // Sampling frequency
-          const fc = 200; // Carrier frequency for passband
-          const Ts = 1 / fs; // Sampling period
-          const SNR_dB = EbNo_dB + 10 * Math.log10(k); // SNR in dB for symbol rate
-          const SNR_linear = 10 ** (SNR_dB / 10); // Convert SNR to linear scale
-      
-          // Generate random binary sequence
-          const data = new Array(N).fill(0).map(() => Math.floor(Math.random() * 2)); // Generate either 0 or 1
-      
-          // Baseband ASK modulation
-          const baseband_signal = data.map(bit => 2 * bit - 1); // Map 0 -> -1 and 1 -> 1
-      
-          // Passband ASK modulation
-          const t = Array.from({ length: N }, (_, i) => i * Ts); // Time vector
-          const passband_signal = baseband_signal.map((signal, i) => signal * Math.cos(2 * Math.PI * fc * t[i]));
-      
-          // Add AWGN to baseband signal
-          const baseband_noisy = baseband_signal.map(signal => signal + Math.sqrt(1 / SNR_linear) * (Math.random() - 0.5));
-      
-          // Add AWGN to passband signal
-          const passband_noisy = passband_signal.map(signal => signal + Math.sqrt(1 / SNR_linear) * (Math.random() - 0.5));
-      
-          // Demodulate passband signal
-          const received_signal = passband_noisy.map((signal, i) => signal * Math.cos(2 * Math.PI * fc * t[i])); // Coherent detection
-      
-          // Clear previous charts if they exist
-          if (basebandChart) {
-              basebandChart.destroy();
-          }
-          if (passbandChart) {
-              passbandChart.destroy();
-          }
-      
-          // Baseband Constellation Chart
-          const basebandCtx = document.getElementById('basebandChart').getContext('2d');
-          basebandChart = new Chart(basebandCtx, {
-              type: 'scatter',
-              data: {
-                  datasets: [{
-                      label: 'Baseband ASK Constellation',
-                      data: baseband_noisy.map(signal => ({ x: signal, y: 0 })),
-                      borderColor: 'blue',
-                      backgroundColor: 'blue'
-                  }]
-              },
-              options: {
-                responsive: false, // Prevents automatic resizing
-                maintainAspectRatio: false, 
-                  title: {
-                      display: true,
-                      text: 'Baseband ASK Constellation'
-                  },
-                  scales: {
-                      xAxes: [{
-                          scaleLabel: {
-                              display: true,
-                              labelString: 'In-phase'
-                          }
-                      }],
-                      yAxes: [{
-                          display: false
-                      }]
-                  }
-              }
-          });
-      
-          // Passband Constellation Chart
-          const passbandCtx = document.getElementById('passbandChart').getContext('2d');
-          passbandChart = new Chart(passbandCtx, {
-              type: 'scatter',
-              data: {
-                  datasets: [{
-                      label: 'Passband ASK Constellation',
-                      data: received_signal.map(signal => ({ x: signal, y: 0 })),
-                      borderColor: 'red',
-                      backgroundColor: 'red'
-                  }]
-              },
-              options: {
-                responsive: false, // Prevents automatic resizing
-                maintainAspectRatio: false, 
-                  title: {
-                      display: true,
-                      text: 'Passband ASK Constellation'
-                  },
-                  scales: {
-                      xAxes: [{
-                          scaleLabel: {
-                              display: true,
-                              labelString: 'In-phase'
-                          }
-                      }],
-                      yAxes: [{
-                          display: false
-                      }]
-                  }
-              }
-          });
-      }
-      
-      // Generate initial constellation diagrams
-      generateConstellations();
-    </script>
   </body>
 </html>

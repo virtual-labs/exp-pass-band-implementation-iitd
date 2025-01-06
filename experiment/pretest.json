@@ -2,175 +2,174 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What is the primary benefit of using the Alamouti scheme in a BPSK system?",
+      "question": "How does binary Frequency Shift Keying (BFSK) differentiate between binary 0 and 1?",
       "answers": {
-        "a": "Increased data rate",
-        "b": "Improved spectral efficiency",
-        "c": "Diversity gain and reduced bit error rate",
-        "d": "Lower transmission power"
+        "a": "By using different amplitudes for binary 0 and 1.",
+        "b": "By using different phases for binary 0 and 1.",
+        "c": "By using two distinct frequencies for binary 0 and 1.",
+        "d": "By using a combination of amplitude and phase shifts."
       },
       "explanations": {
-        "a": "The Alamouti scheme primarily improves reliability, not data rate.",
-        "b": "Spectral efficiency is not significantly improved in this scheme.",
-        "c": "Correct. The Alamouti scheme provides diversity gain and reduces the bit error rate.",
-        "d": "It does not directly lower transmission power."
+        "a": "BFSK does not vary amplitude to differentiate binary data.",
+        "b": "BFSK does not use phase differences to differentiate binary data.",
+        "c": "BFSK uses two distinct frequencies, one for binary 0 and another for binary 1.",
+        "d": "BFSK does not combine amplitude and phase shifts."
       },
       "correctAnswer": "c",
       "difficulty": "intermediate"
     },
     {
-      "question": "How many time slots does the Alamouti scheme use to transmit two symbols in a BPSK system?",
+      "question": "In Phase Shift Keying (PSK), what does the term 'constellation diagram' refer to?",
       "answers": {
-        "a": "One time slot",
-        "b": "Two time slots",
-        "c": "Three time slots",
-        "d": "Four time slots"
+        "a": "A diagram showing different frequency levels used in modulation.",
+        "b": "A plot representing the complex envelope of the modulated signal.",
+        "c": "A diagram showing various amplitude levels used in modulation.",
+        "d": "A plot representing the time domain representation of the signal."
       },
       "explanations": {
-        "a": "One time slot is not sufficient for transmitting two symbols in this scheme.",
-        "b": "Correct. The Alamouti scheme transmits two symbols over two time slots.",
-        "c": "Three time slots are not required.",
-        "d": "Four time slots would be excessive for this scheme."
+        "a": "Constellation diagrams do not show frequency levels.",
+        "b": "Constellation diagrams plot the phase and amplitude of a modulated signal on a complex plane.",
+        "c": "Constellation diagrams are not used for amplitude levels in isolation.",
+        "d": "Constellation diagrams are not time domain representations."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "In the Alamouti scheme, how many transmitter antennas are used?",
+      "question": "What is a major disadvantage of Amplitude Shift Keying (ASK)?",
       "answers": {
-        "a": "One",
-        "b": "Two",
-        "c": "Three",
-        "d": "Four"
+        "a": "High power consumption",
+        "b": "High susceptibility to noise",
+        "c": "Complex implementation",
+        "d": "High bandwidth requirement"
       },
       "explanations": {
-        "a": "One transmitter antenna does not provide spatial diversity.",
-        "b": "Correct. The Alamouti scheme uses two transmitter antennas.",
-        "c": "Three antennas are not used in the basic Alamouti scheme.",
-        "d": "Four antennas are excessive for this scheme."
+        "a": "ASK generally does not consume more power than other modulations.",
+        "b": "ASK is highly susceptible to noise because it affects the amplitude, which can be easily distorted.",
+        "c": "ASK is relatively simple to implement.",
+        "d": "ASK does not necessarily have a high bandwidth requirement compared to other modulations."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "What type of diversity is achieved by using the Alamouti scheme in a BPSK system?",
+      "question": "Which digital modulation technique is more robust to non-linear distortion?",
       "answers": {
-        "a": "Time diversity",
-        "b": "Frequency diversity",
-        "c": "Spatial diversity",
-        "d": "Polarization diversity"
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "All are equally robust"
       },
       "explanations": {
-        "a": "The scheme does not rely on time diversity.",
-        "b": "Frequency diversity is not the focus here.",
-        "c": "Correct. The Alamouti scheme achieves spatial diversity using multiple antennas.",
-        "d": "Polarization diversity is unrelated to the Alamouti scheme."
+        "a": "ASK is susceptible to amplitude distortion.",
+        "b": "FSK is less affected by non-linear distortion due to frequency variation.",
+        "c": "PSK can be affected by non-linearities in phase.",
+        "d": "FSK stands out as more robust compared to ASK and PSK."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which modulation technique is often used for radio frequency (RF) applications due to its robustness to interference?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Pulse Code Modulation (PCM)"
+      },
+      "explanations": {
+        "a": "ASK is not as robust to interference as FSK.",
+        "b": "FSK is used in RF applications due to its robustness to interference.",
+        "c": "PSK is robust but not as commonly used as FSK in RF applications.",
+        "d": "PCM is not a modulation technique used in RF applications."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the primary disadvantage of Binary Phase Shift Keying (BPSK) in comparison to other modulation techniques?",
+      "answers": {
+        "a": "BPSK requires higher bandwidth.",
+        "b": "BPSK is less noise-resistant.",
+        "c": "BPSK supports lower data rates.",
+        "d": "BPSK is more complex to implement."
+      },
+      "explanations": {
+        "a": "BPSK actually requires less bandwidth than many other modulations.",
+        "b": "BPSK is generally more noise-resistant than other modulations.",
+        "c": "BPSK supports lower data rates because it transmits one bit per symbol.",
+        "d": "BPSK is simpler to implement compared to more complex modulations."
       },
       "correctAnswer": "c",
       "difficulty": "intermediate"
     },
     {
-      "question": "What is the encoding matrix used in the Alamouti scheme?",
+      "question": "Which modulation technique is typically used in Bluetooth communication?",
       "answers": {
-        "a": "1 -1; 1 1",
-        "b": "s1 s2; -s2* s1*",
-        "c": "s1 s2; s2 s1",
-        "d": "s1* s2; -s2 s1*"
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Time Division Multiplexing (TDM)"
       },
       "explanations": {
-        "a": "This is not the correct Alamouti matrix.",
-        "b": "Correct. This is the encoding matrix used for Alamouti scheme.",
-        "c": "This is not the structure of the encoding matrix.",
-        "d": "Incorrect arrangement of conjugate and signs."
+        "a": "ASK is not typically used in Bluetooth communication.",
+        "b": "FSK is used in Bluetooth, specifically Gaussian FSK (GFSK).",
+        "c": "PSK is not the primary modulation technique used in Bluetooth.",
+        "d": "TDM is a multiplexing technique, not a modulation technique."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "Which channel model is most commonly used for testing the Alamouti scheme?",
+      "question": "In digital communication, what is the primary purpose of using modulation techniques such as ASK, FSK, and PSK?",
       "answers": {
-        "a": "AWGN only",
-        "b": "Rayleigh fading",
-        "c": "Rician fading",
-        "d": "Free space model"
+        "a": "To decrease the bandwidth requirement.",
+        "b": "To increase the complexity of the system.",
+        "c": "To adapt the signal for transmission over various media.",
+        "d": "To minimize power consumption."
       },
       "explanations": {
-        "a": "AWGN only does not represent realistic multipath fading.",
-        "b": "Correct. Rayleigh fading is used to test systems with multipath propagation.",
-        "c": "Rician fading is also used but less common than Rayleigh for Alamouti.",
-        "d": "Free space model lacks fading effects needed for Alamouti tests."
+        "a": "Modulation does not necessarily decrease bandwidth requirements.",
+        "b": "Modulation can increase system complexity but that is not the primary purpose.",
+        "c": "Modulation allows signals to be transmitted efficiently over different media types.",
+        "d": "Modulation is not primarily used to minimize power consumption."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "How does non-coherent FSK differ from coherent FSK?",
+      "answers": {
+        "a": "Non-coherent FSK requires carrier phase synchronization.",
+        "b": "Non-coherent FSK does not require carrier phase synchronization.",
+        "c": "Non-coherent FSK uses a single frequency for all bits.",
+        "d": "Non-coherent FSK is more complex to implement."
+      },
+      "explanations": {
+        "a": "Non-coherent FSK does not require synchronization, unlike coherent FSK.",
+        "b": "Non-coherent FSK does not require phase synchronization, making it simpler.",
+        "c": "Non-coherent FSK still uses multiple frequencies.",
+        "d": "Non-coherent FSK is generally simpler to implement than coherent FSK."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "What assumption is made at the receiver for decoding the Alamouti scheme?",
+      "question": "In PSK, what is the result of increasing the number of phase states in terms of data transmission?",
       "answers": {
-        "a": "The receiver has perfect channel state information (CSI).",
-        "b": "The transmitter and receiver are synchronized only in time.",
-        "c": "The receiver knows the exact noise power.",
-        "d": "The receiver estimates CSI with some error margin."
+        "a": "Decreases the data rate.",
+        "b": "Increases the error rate.",
+        "c": "Increases the data rate.",
+        "d": "Decreases the bandwidth requirement."
       },
       "explanations": {
-        "a": "Correct. The receiver typically assumes perfect CSI for optimal decoding.",
-        "b": "Synchronization is not the only assumption.",
-        "c": "Noise power knowledge is not assumed.",
-        "d": "Decoding assumes perfect CSI for ideal performance."
+        "a": "Increasing phase states generally increases the data rate.",
+        "b": "More phase states can make the system more susceptible to noise, but it increases data rate.",
+        "c": "Increasing phase states allows more bits to be transmitted per symbol, increasing data rate.",
+        "d": "It does not necessarily decrease bandwidth requirements."
       },
-      "correctAnswer": "a",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "How does the Alamouti scheme handle the received signal for decoding?",
-      "answers": {
-        "a": "It uses only the signal from one antenna.",
-        "b": "It combines signals from two antennas with conjugate multiplication.",
-        "c": "It averages the received signals over multiple time slots.",
-        "d": "It decodes the received signal without any processing."
-      },
-      "explanations": {
-        "a": "Both antennas are used for spatial diversity.",
-        "b": "Correct. The scheme combines signals using complex conjugate multiplication.",
-        "c": "Averaging is not used in Alamouti decoding.",
-        "d": "Processing is essential for accurate decoding."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "What is the key advantage of the Alamouti scheme in terms of complexity?",
-      "answers": {
-        "a": "Lower transmission power",
-        "b": "Simple linear decoding",
-        "c": "No need for channel estimation",
-        "d": "High spectral efficiency"
-      },
-      "explanations": {
-        "a": "Transmission power is not significantly reduced.",
-        "b": "Correct. The scheme allows for simple linear decoding at the receiver.",
-        "c": "Channel estimation is needed for decoding.",
-        "d": "Spectral efficiency is not the main advantage."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "Which property of the channel is crucial for the Alamouti scheme to work effectively?",
-      "answers": {
-        "a": "The channel must be stationary and flat fading during two time slots.",
-        "b": "The channel must change rapidly to achieve better diversity.",
-        "c": "The channel must have Rician fading characteristics.",
-        "d": "The channel must have no noise."
-      },
-      "explanations": {
-        "a": "Correct. The channel should be constant during the two time slots for proper decoding.",
-        "b": "Rapid changes disrupt the decoding process.",
-        "c": "Rician fading is not necessary for the scheme.",
-        "d": "Noise is always present and accounted for in the design."
-      },
-      "correctAnswer": "a",
+      "correctAnswer": "c",
       "difficulty": "intermediate"
     }
   ]
 }
-

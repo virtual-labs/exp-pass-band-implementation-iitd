@@ -1,0 +1,257 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+    <style>
+      table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        width: 100px;
+      }
+    </style>
+    <script>
+	function refreshPage() {
+    location.reload();
+}
+      let observationData = [];
+      let enteredSNRValues = [];
+
+      function plotBER() {
+        const numBits = parseInt(document.getElementById("numBits").value);
+        const specificSNR = parseFloat(
+          document.getElementById("specificSNRValue").value
+        );
+
+        if (!isNaN(specificSNR)) {
+          if (!enteredSNRValues.includes(specificSNR)) {
+            const berResults = berPerformanceAnalysis(numBits, specificSNR);
+            observationData.push({ SNR: specificSNR, BER: berResults });
+            enteredSNRValues.push(specificSNR);
+            updateTable();
+          } else {
+            alert(
+              "SNR (dB) value already exists. Please enter a different value."
+            );
+          }
+        } else {
+          alert("Please enter a valid SNR value.");
+        }
+      }
+
+      function updateTable() {
+        const table = document.getElementById("observationTable");
+        table.innerHTML = "<tr><th>SNR (dB)</th><th>BER</th></tr>";
+
+        observationData.sort((a, b) => a.SNR - b.SNR);
+
+        observationData.forEach((data) => {
+          const newRow = table.insertRow(-1);
+          const cell1 = newRow.insertCell(0);
+          const cell2 = newRow.insertCell(1);
+
+          cell1.textContent = data.SNR;
+          cell2.textContent = data.BER;
+        });
+      }
+
+      function updateGraph() {
+        const snrValues = [];
+        const berValues = [];
+
+        observationData.forEach((data) => {
+          snrValues.push(data.SNR);
+          berValues.push(data.BER);
+        });
+
+        if (snrValues.length > 0 && berValues.length > 0) {
+          // Plot BER vs SNR using Plotly.js
+          const data = [
+            {
+              x: snrValues,
+              y: berValues,
+              mode: "lines+markers",
+              name: "BER vs SNR",
+              type: "scatter",
+            },
+          ];
+
+          const layout = {
+            title: "BER vs SNR in ASK (Logarithmic)",
+            xaxis: {
+              title: "SNR (dB)",
+            },
+            yaxis: {
+              title: "Bit Error Rate (BER)",
+              type: "log",
+            },
+          };
+
+          Plotly.newPlot("berChart", data, layout);
+        } else {
+          alert("Please add data to the table before plotting.");
+        }
+      }
+
+      function generateRandomBits(numBits) {
+        let data = [];
+        for (let i = 0; i < numBits; i++) {
+          data.push(Math.round(Math.random()));
+        }
+        return data;
+      }
+
+      function awgn(data, snr) {
+        const variance = parseFloat((1 / 10 ** (snr / 10)).toFixed(10));
+        const noisyData = [];
+        for (let i = 0; i < data.length; i++) {
+          const noise = parseFloat(
+            (Math.sqrt(variance) * (Math.random() * 2 - 1)).toFixed(10)
+          );
+          noisyData.push(parseFloat((data[i] + noise).toFixed(10)));
+        }
+        return noisyData;
+      }
+
+      function calculateErrorRate(data, noisyData) {
+        let error = 0;
+        for (let i = 0; i < data.length; i++) {
+          if (
+            (noisyData[i] > 0.5 && data[i] === 0) ||
+            (noisyData[i] < 0.5 && data[i] === 1)
+          ) {
+            error++;
+          }
+        }
+        return parseFloat((error / data.length).toFixed(10));
+      }
+
+      function berPerformanceAnalysis(numBits, snr) {
+        const data = generateRandomBits(numBits);
+        const noisyData = awgn(data, snr);
+        const errorRate = calculateErrorRate(data, noisyData);
+        return errorRate;
+      }
+    </script>
+		<style>
+	#h1 {
+    color: #333;
+    font-size: 22px; /* Increased font size */
+    margin-bottom: 20px;
+}
+	ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #e0e7ff;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* Set font size for list items */
+}
+
+li::before {
+    content: "✔";
+    color: #4caf50;
+    margin-right: 10px;
+}
+	</style>
+  </head>
+  <body>
+	<div id = "instructions">
+    <h1 id = "h1">Instructions for Calculating BER vs. SNR for Amplitude Shift Keying (ASK)</h1>
+    <ul>
+        <li>Step 1: Enter the number of bits and SNR (dB) values in the input fields.</li>
+		<li>Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
+        <li>Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
+		<li>Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
+		</ul>
+	</div>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="">
+          <div class="flex flex-col justify-center">
+            <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="numBits">Number of Bits:</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="numBits"
+                    min="1"
+                    value="1000000"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="specificSNRValue">SNR (dB):</label>
+                  <input
+                    class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="specificSNRValue"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="plotBER()"
+                >
+                  Calculate BER
+                </button>
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="updateGraph()"
+                >
+                  Plot BER vs SNR
+                </button>
+              </div>
+			  			                <div class="flex items-center justify-center gap-1 mt-2">
+    <button style="position: absolute; right:200px;" class="button bg-green-500 text-white rounded-md px-2 py-1 text-base"
+	onclick="refreshPage()">Reset Simulator</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex my-2 max-lg:flex-col">
+            <div class="flex-1 basis-2/5">
+              <h3 class="flex ml-3 text-[#42c7bc] text-[20px] font-medium">
+                BER Results
+              </h3>
+              <table class="mt-1" id="observationTable">
+                <tr class="bg-slate-300">
+                  <th>SNR (dB)</th>
+                  <th>BER</th>
+                </tr>
+              </table>
+            </div>
+            <div class="flex-1 basis-3/5">
+              <div id="berChart" width="600" height="400"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
