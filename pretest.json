@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "How does binary Frequency Shift Keying (BFSK) differentiate between binary 0 and 1?",
+      "answers": {
+        "a": "By using different amplitudes for binary 0 and 1.",
+        "b": "By using different phases for binary 0 and 1.",
+        "c": "By using two distinct frequencies for binary 0 and 1.",
+        "d": "By using a combination of amplitude and phase shifts."
+      },
+      "explanations": {
+        "a": "BFSK does not vary amplitude to differentiate binary data.",
+        "b": "BFSK does not use phase differences to differentiate binary data.",
+        "c": "BFSK uses two distinct frequencies, one for binary 0 and another for binary 1.",
+        "d": "BFSK does not combine amplitude and phase shifts."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In Phase Shift Keying (PSK), what does the term 'constellation diagram' refer to?",
+      "answers": {
+        "a": "A diagram showing different frequency levels used in modulation.",
+        "b": "A plot representing the complex envelope of the modulated signal.",
+        "c": "A diagram showing various amplitude levels used in modulation.",
+        "d": "A plot representing the time domain representation of the signal."
+      },
+      "explanations": {
+        "a": "Constellation diagrams do not show frequency levels.",
+        "b": "Constellation diagrams plot the phase and amplitude of a modulated signal on a complex plane.",
+        "c": "Constellation diagrams are not used for amplitude levels in isolation.",
+        "d": "Constellation diagrams are not time domain representations."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is a major disadvantage of Amplitude Shift Keying (ASK)?",
+      "answers": {
+        "a": "High power consumption",
+        "b": "High susceptibility to noise",
+        "c": "Complex implementation",
+        "d": "High bandwidth requirement"
+      },
+      "explanations": {
+        "a": "ASK generally does not consume more power than other modulations.",
+        "b": "ASK is highly susceptible to noise because it affects the amplitude, which can be easily distorted.",
+        "c": "ASK is relatively simple to implement.",
+        "d": "ASK does not necessarily have a high bandwidth requirement compared to other modulations."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which digital modulation technique is more robust to non-linear distortion?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "All are equally robust"
+      },
+      "explanations": {
+        "a": "ASK is susceptible to amplitude distortion.",
+        "b": "FSK is less affected by non-linear distortion due to frequency variation.",
+        "c": "PSK can be affected by non-linearities in phase.",
+        "d": "FSK stands out as more robust compared to ASK and PSK."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which modulation technique is often used for radio frequency (RF) applications due to its robustness to interference?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Pulse Code Modulation (PCM)"
+      },
+      "explanations": {
+        "a": "ASK is not as robust to interference as FSK.",
+        "b": "FSK is used in RF applications due to its robustness to interference.",
+        "c": "PSK is robust but not as commonly used as FSK in RF applications.",
+        "d": "PCM is not a modulation technique used in RF applications."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the primary disadvantage of Binary Phase Shift Keying (BPSK) in comparison to other modulation techniques?",
+      "answers": {
+        "a": "BPSK requires higher bandwidth.",
+        "b": "BPSK is less noise-resistant.",
+        "c": "BPSK supports lower data rates.",
+        "d": "BPSK is more complex to implement."
+      },
+      "explanations": {
+        "a": "BPSK actually requires less bandwidth than many other modulations.",
+        "b": "BPSK is generally more noise-resistant than other modulations.",
+        "c": "BPSK supports lower data rates because it transmits one bit per symbol.",
+        "d": "BPSK is simpler to implement compared to more complex modulations."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which modulation technique is typically used in Bluetooth communication?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Time Division Multiplexing (TDM)"
+      },
+      "explanations": {
+        "a": "ASK is not typically used in Bluetooth communication.",
+        "b": "FSK is used in Bluetooth, specifically Gaussian FSK (GFSK).",
+        "c": "PSK is not the primary modulation technique used in Bluetooth.",
+        "d": "TDM is a multiplexing technique, not a modulation technique."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In digital communication, what is the primary purpose of using modulation techniques such as ASK, FSK, and PSK?",
+      "answers": {
+        "a": "To decrease the bandwidth requirement.",
+        "b": "To increase the complexity of the system.",
+        "c": "To adapt the signal for transmission over various media.",
+        "d": "To minimize power consumption."
+      },
+      "explanations": {
+        "a": "Modulation does not necessarily decrease bandwidth requirements.",
+        "b": "Modulation can increase system complexity but that is not the primary purpose.",
+        "c": "Modulation allows signals to be transmitted efficiently over different media types.",
+        "d": "Modulation is not primarily used to minimize power consumption."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "How does non-coherent FSK differ from coherent FSK?",
+      "answers": {
+        "a": "Non-coherent FSK requires carrier phase synchronization.",
+        "b": "Non-coherent FSK does not require carrier phase synchronization.",
+        "c": "Non-coherent FSK uses a single frequency for all bits.",
+        "d": "Non-coherent FSK is more complex to implement."
+      },
+      "explanations": {
+        "a": "Non-coherent FSK does not require synchronization, unlike coherent FSK.",
+        "b": "Non-coherent FSK does not require phase synchronization, making it simpler.",
+        "c": "Non-coherent FSK still uses multiple frequencies.",
+        "d": "Non-coherent FSK is generally simpler to implement than coherent FSK."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In PSK, what is the result of increasing the number of phase states in terms of data transmission?",
+      "answers": {
+        "a": "Decreases the data rate.",
+        "b": "Increases the error rate.",
+        "c": "Increases the data rate.",
+        "d": "Decreases the bandwidth requirement."
+      },
+      "explanations": {
+        "a": "Increasing phase states generally increases the data rate.",
+        "b": "More phase states can make the system more susceptible to noise, but it increases data rate.",
+        "c": "Increasing phase states allows more bits to be transmitted per symbol, increasing data rate.",
+        "d": "It does not necessarily decrease bandwidth requirements."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    }
+  ]
+}
