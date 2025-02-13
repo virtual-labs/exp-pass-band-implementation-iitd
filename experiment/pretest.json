@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "How does binary Frequency Shift Keying (BFSK) differentiate between binary 0 and 1?",
+      "question": "1. How does binary Frequency Shift Keying (BFSK) differentiate between binary 0 and 1?",
       "answers": {
         "a": "By using different amplitudes for binary 0 and 1.",
         "b": "By using different phases for binary 0 and 1.",
@@ -19,7 +19,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "In Phase Shift Keying (PSK), what does the term 'constellation diagram' refer to?",
+      "question": "2. In Phase Shift Keying (PSK), what does the term 'constellation diagram' refer to?",
       "answers": {
         "a": "A diagram showing different frequency levels used in modulation.",
         "b": "A plot representing the complex envelope of the modulated signal.",
@@ -36,7 +36,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is a major disadvantage of Amplitude Shift Keying (ASK)?",
+      "question": "3. What is a major disadvantage of Amplitude Shift Keying (ASK)?",
       "answers": {
         "a": "High power consumption",
         "b": "High susceptibility to noise",
@@ -53,7 +53,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which digital modulation technique is more robust to non-linear distortion?",
+      "question": "4. Which digital modulation technique is more robust to non-linear distortion?",
       "answers": {
         "a": "Amplitude Shift Keying (ASK)",
         "b": "Frequency Shift Keying (FSK)",
@@ -70,7 +70,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which modulation technique is often used for radio frequency (RF) applications due to its robustness to interference?",
+      "question": "5. Which modulation technique is often used for radio frequency (RF) applications due to its robustness to interference?",
       "answers": {
         "a": "Amplitude Shift Keying (ASK)",
         "b": "Frequency Shift Keying (FSK)",
@@ -87,7 +87,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is the primary disadvantage of Binary Phase Shift Keying (BPSK) in comparison to other modulation techniques?",
+      "question": "6. What is the primary disadvantage of Binary Phase Shift Keying (BPSK) in comparison to other modulation techniques?",
       "answers": {
         "a": "BPSK requires higher bandwidth.",
         "b": "BPSK is less noise-resistant.",
@@ -104,7 +104,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which modulation technique is typically used in Bluetooth communication?",
+      "question": "7. Which modulation technique is typically used in Bluetooth communication?",
       "answers": {
         "a": "Amplitude Shift Keying (ASK)",
         "b": "Frequency Shift Keying (FSK)",
@@ -121,7 +121,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "In digital communication, what is the primary purpose of using modulation techniques such as ASK, FSK, and PSK?",
+      "question": "8. In digital communication, what is the primary purpose of using modulation techniques such as ASK, FSK, and PSK?",
       "answers": {
         "a": "To decrease the bandwidth requirement.",
         "b": "To increase the complexity of the system.",
@@ -138,7 +138,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "How does non-coherent FSK differ from coherent FSK?",
+      "question": "9. How does non-coherent FSK differ from coherent FSK?",
       "answers": {
         "a": "Non-coherent FSK requires carrier phase synchronization.",
         "b": "Non-coherent FSK does not require carrier phase synchronization.",
@@ -155,7 +155,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "In PSK, what is the result of increasing the number of phase states in terms of data transmission?",
+      "question": "10. In PSK, what is the result of increasing the number of phase states in terms of data transmission?",
       "answers": {
         "a": "Decreases the data rate.",
         "b": "Increases the error rate.",
