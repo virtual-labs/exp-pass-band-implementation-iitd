@@ -1,0 +1,185 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "questionNumber": 1,
+      "question": "In a coherent Frequency Shift Keying (FSK) system, what is the primary challenge in achieving coherent detection?",
+      "answers": {
+        "a": "Maintaining phase synchronization between transmitter and receiver",
+        "b": "Ensuring the amplitude of the carrier signals remain constant",
+        "c": "Minimizing frequency deviation",
+        "d": "Reducing the noise floor of the system"
+      },
+      "explanations": {
+        "a": "Coherent detection requires maintaining phase synchronization to correctly demodulate the signal.",
+        "b": "Amplitude consistency is less critical in FSK as it relies on frequency changes.",
+        "c": "Frequency deviation is not the primary challenge in coherent detection.",
+        "d": "While important, reducing the noise floor is not specific to coherent detection."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 2,
+      "question": "Which of the following is a major disadvantage of Amplitude Shift Keying (ASK)?",
+      "answers": {
+        "a": "Susceptibility to noise and interference",
+        "b": "Complexity of implementation",
+        "c": "High bandwidth requirements",
+        "d": "Inability to use high-frequency carriers"
+      },
+      "explanations": {
+        "a": "ASK is highly susceptible to noise because it relies on amplitude changes.",
+        "b": "ASK is generally simpler to implement than other modulation types.",
+        "c": "ASK does not inherently require high bandwidth compared to other modulations.",
+        "d": "ASK can use high-frequency carriers."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 3,
+      "question": "Which modulation scheme is typically more bandwidth-efficient?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Shift Keying (FSK)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Pulse Amplitude Modulation (PAM)"
+      },
+      "explanations": {
+        "a": "ASK is not as bandwidth-efficient due to its simple encoding.",
+        "b": "FSK requires more bandwidth due to frequency changes.",
+        "c": "PSK is more bandwidth-efficient because it encodes information in phase shifts.",
+        "d": "PAM is not inherently more bandwidth-efficient than PSK."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 4,
+      "question": "In Phase Shift Keying (PSK), what is the impact of increasing the number of phase states?",
+      "answers": {
+        "a": "Increased robustness to noise",
+        "b": "Reduced bandwidth requirement",
+        "c": "Higher data rates",
+        "d": "Simpler receiver design"
+      },
+      "explanations": {
+        "a": "Increasing the number of phase states makes the system more sensitive to noise.",
+        "b": "More phase states generally require similar or increased bandwidth.",
+        "c": "More phase states allow higher data rates as more bits can be encoded per symbol.",
+        "d": "The receiver design becomes more complex with more phase states."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 5,
+      "question": "Which of the following is a key advantage of using Non-Coherent FSK over Coherent FSK?",
+      "answers": {
+        "a": "Simpler receiver design",
+        "b": "Higher data transmission rates",
+        "c": "Lower power consumption",
+        "d": "Better performance in noisy environments"
+      },
+      "explanations": {
+        "a": "Non-Coherent FSK has a simpler receiver design because it does not require phase synchronization.",
+        "b": "Coherent FSK can achieve higher data rates due to phase detection.",
+        "c": "Non-Coherent FSK does not inherently use less power.",
+        "d": "Non-Coherent FSK does not generally perform better in noise compared to Coherent FSK."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 6,
+      "question": "Why is Phase Shift Keying (PSK) considered more power efficient than Frequency Shift Keying (FSK)?",
+      "answers": {
+        "a": "PSK can maintain performance at lower signal-to-noise ratios.",
+        "b": "PSK requires less bandwidth.",
+        "c": "PSK is simpler to implement.",
+        "d": "PSK does not require frequency modulation."
+      },
+      "explanations": {
+        "a": "PSK is more power efficient because it can achieve good performance at lower signal-to-noise ratios.",
+        "b": "PSK typically requires similar bandwidth compared to FSK.",
+        "c": "PSK is often more complex due to synchronization requirements.",
+        "d": "PSK relies on phase modulation rather than frequency modulation."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 7,
+      "question": "Which characteristic of FSK modulation makes it advantageous for certain applications?",
+      "answers": {
+        "a": "Its resistance to phase jitter",
+        "b": "Its robustness in high-noise environments",
+        "c": "Its ability to encode more data per symbol",
+        "d": "Its minimal bandwidth requirement"
+      },
+      "explanations": {
+        "a": "FSK is not directly related to phase jitter.",
+        "b": "FSK is robust in noisy environments because the frequency changes are distinct.",
+        "c": "FSK does not inherently encode more data per symbol than other methods.",
+        "d": "FSK typically requires more bandwidth due to the frequency changes."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 8,
+      "question": "What is the primary disadvantage of using higher-order PSK modulation schemes?",
+      "answers": {
+        "a": "Increased bandwidth usage",
+        "b": "Higher power consumption",
+        "c": "Increased sensitivity to noise",
+        "d": "Greater amplitude variations"
+      },
+      "explanations": {
+        "a": "Higher-order PSK does not necessarily increase bandwidth usage.",
+        "b": "Higher-order PSK does not inherently require more power.",
+        "c": "Increased sensitivity to noise due to smaller phase differences between symbols.",
+        "d": "PSK is not typically associated with amplitude variations."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 9,
+      "question": "Which modulation scheme is typically used in radio broadcasting?",
+      "answers": {
+        "a": "Amplitude Shift Keying (ASK)",
+        "b": "Frequency Modulation (FM)",
+        "c": "Phase Shift Keying (PSK)",
+        "d": "Frequency Shift Keying (FSK)"
+      },
+      "explanations": {
+        "a": "ASK is not typically used in radio broadcasting.",
+        "b": "FM is commonly used in radio broadcasting due to its robustness to noise.",
+        "c": "PSK is used in digital communication, not typically in radio broadcasting.",
+        "d": "FSK is used in digital communication, not typically in radio broadcasting."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "questionNumber": 10,
+      "question": "In a PSK system, what can be used to improve error performance?",
+      "answers": {
+        "a": "Increasing the carrier frequency",
+        "b": "Using error correction coding",
+        "c": "Reducing the modulation order",
+        "d": "Increasing the power of the transmitted signal"
+      },
+      "explanations": {
+        "a": "Increasing the carrier frequency does not directly improve error performance.",
+        "b": "Error correction coding helps to detect and correct errors, improving performance.",
+        "c": "Reducing modulation order decreases data rate but improves error performance.",
+        "d": "Increasing power can improve signal-to-noise ratio, enhancing performance."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    }
+  ]
+}
