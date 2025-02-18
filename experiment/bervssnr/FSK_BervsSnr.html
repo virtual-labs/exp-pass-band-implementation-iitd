@@ -55,6 +55,8 @@ li::before {
 		<li>Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
         <li>Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
 		<li>Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
+	    <li>The theoretical BER for binary FSK (BFSK) in an AWGN channel is calculated as:
+BER =  (1/2) * erfc(sqrt(SNR_bfsk / 2)).</li>
 		</ul>
 	</div>
     <!-- sidebar and body -->
@@ -129,6 +131,33 @@ li::before {
         </div>
       </div>
     </div>
+	  	<script>
+        function checkFrequencies() {
+            // Get values from input fields
+            let carrierFrequency = parseInt(document.getElementById("numBits").value);
+            let bit_rate = 1000000;
+            
+            // Check the frequencies
+            if (carrierFrequency > bit_rate) {
+                alert("1000000 bits is generally sufficient for BER estimation in most scenarios. The number of bits should not exceed 1000000.");
+            window.location.reload(true); 
+			} else {
+                console.log(".");
+            }
+        }
+
+        // Function to attach event listeners to all buttons
+        function attachEventListeners() {
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', checkFrequencies);
+            });
+        }
+
+        // Attach event listeners when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', attachEventListeners);
+
+    </script>
     <script>
 		function refreshPage() {
     location.reload();
