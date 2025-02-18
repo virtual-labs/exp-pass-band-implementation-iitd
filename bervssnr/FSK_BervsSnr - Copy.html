@@ -1,0 +1,228 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+    <style>
+      table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="">
+          <div class="flex flex-col justify-center">
+            <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="numBits">Number of Bits:</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="numBits"
+                    min="1"
+                    value="10000"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="snr">SNR (dB):</label>
+                  <input
+                    class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="snr"
+                    min="0"
+                    step="1"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  id="calculate"
+                >
+                  Calculate BER
+                </button>
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  id="plotButton"
+                >
+                  Plot BER vs SNR
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex my-2 max-lg:flex-col">
+            <div class="flex-1 basis-2/5">
+              <h3 class="flex ml-3 text-[#42c7bc] text-[20px] font-medium">
+                BER Results
+              </h3>
+              <table class="mt-1" id="resultTable">
+                <tr class="bg-slate-300">
+                  <th onclick="sortTable(0)">SNR (dB)</th>
+                  <th>Bit Error Rate (BER)</th>
+                </tr>
+              </table>
+            </div>
+            <div class="flex-1 basis-3/5">
+              <div id="plotDiv"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Complementary error function (erfc) approximation
+      function erfc(x) {
+        var t = 1 / (1 + 0.5 * Math.abs(x));
+        var tau =
+          t *
+          Math.exp(
+            -Math.pow(x, 2) -
+              1.26551223 +
+              1.00002368 * t +
+              0.37409196 * Math.pow(t, 2) +
+              0.09678418 * Math.pow(t, 3) -
+              0.18628806 * Math.pow(t, 4) +
+              0.27886807 * Math.pow(t, 5) -
+              1.13520398 * Math.pow(t, 6) +
+              1.48851587 * Math.pow(t, 7) -
+              0.82215223 * Math.pow(t, 8) +
+              0.17087277 * Math.pow(t, 9)
+          );
+        return x >= 0 ? tau : 2 - tau;
+      }
+
+      // Theoretical BER calculation for BFSK
+      function theoreticalBER(SNRdB) {
+        let SNR = Math.pow(10, SNRdB / 10);
+        return 0.5 * erfc(Math.sqrt(SNR / 2));
+      }
+
+      document
+        .getElementById("calculate")
+        .addEventListener("click", function () {
+          let numBits = parseInt(document.getElementById("numBits").value);
+          let snr = parseFloat(document.getElementById("snr").value);
+          let ber = theoreticalBER(snr);
+
+          let table = document.getElementById("resultTable");
+          let snrExists = false;
+
+          // Check if the SNR already exists in the table
+          for (let i = 1; i < table.rows.length; i++) {
+            let existingSNR = parseFloat(table.rows[i].cells[0].textContent);
+            if (existingSNR === snr) {
+              snrExists = true;
+              break;
+            }
+          }
+
+          // If SNR doesn't exist, add it to the table and sort the table
+          if (!snrExists) {
+            let row = table.insertRow(-1); // Insert row at the end of the table
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+
+            cell1.textContent = snr.toFixed(2);
+            cell2.textContent = ber.toExponential(2);
+
+            // Sort the table based on SNR values
+            sortTable(0);
+          } else {
+            alert("SNR (dB) value already exists in the table.");
+          }
+        });
+
+      function sortTable(columnIndex) {
+        let table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("resultTable");
+        switching = true;
+        while (switching) {
+          switching = false;
+          rows = table.rows;
+          for (i = 1; i < rows.length - 1; i++) {
+            shouldSwitch = false;
+            x = parseFloat(
+              rows[i].getElementsByTagName("td")[columnIndex].textContent
+            );
+            y = parseFloat(
+              rows[i + 1].getElementsByTagName("td")[columnIndex].textContent
+            );
+            if (x > y) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+          if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+          }
+        }
+      }
+
+      document
+        .getElementById("plotButton")
+        .addEventListener("click", function () {
+          let table = document.getElementById("resultTable");
+          let snrData = [];
+          let berData = [];
+
+          for (let i = 1; i < table.rows.length; i++) {
+            snrData.push(parseFloat(table.rows[i].cells[0].textContent));
+            berData.push(parseFloat(table.rows[i].cells[1].textContent));
+          }
+
+          // Plot BER vs SNR using Plotly.js
+          var data = [
+            {
+              x: snrData,
+              y: berData,
+              mode: "lines+markers",
+              line: {
+                color: "blue",
+              },
+              marker: {
+                symbol: "circle",
+                size: 8,
+              },
+            },
+          ];
+
+          var layout = {
+            title: "BER vs SNR",
+            xaxis: {
+              title: "SNR (dB)",
+            },
+            yaxis: {
+              title: "Bit Error Rate (BER)",
+              type: "log",
+              autorange: true,
+            },
+          };
+
+          Plotly.newPlot("plotDiv", data, layout);
+        });
+    </script>
+  </body>
+</html>
