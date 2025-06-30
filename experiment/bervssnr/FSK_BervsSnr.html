@@ -26,24 +26,68 @@
     font-size: 22px; /* Increased font size */
     margin-bottom: 20px;
 }
-	ul {
-    list-style-type: none;
-    padding: 0;
+#container {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 25px 40px;
+  max-width: 100%;
+  margin: 20px auto;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-li {
-    background-color: #e0e7ff;
-    margin: 5px 0;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 14px; /* Set font size for list items */
+h1 {
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: justify;
 }
 
-li::before {
-    content: "✔";
-    color: #4caf50;
-    margin-right: 10px;
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.step {
+  margin: 12px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+li.step::before {
+  content: "✔";
+  color: #10b981;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+li.step:hover {
+  transform: scale(1.02);
+  background-color: #f3f4f6;
+}
+
+/* Color code each step */
+.step1 {
+  background-color: #ffe0e0;
+  border-left: 5px solid #ef4444;
+}
+.step2 {
+  background-color: #e0f7ff;
+  border-left: 5px solid #0ea5e9;
+}
+.step3 {
+  background-color: #e0ffe5;
+  border-left: 5px solid #22c55e;
+}
+.step4 {
+  background-color: #f5e0ff;
+  border-left: 5px solid #a855f7;
 }
 	</style>
   </head>
@@ -51,12 +95,12 @@ li::before {
   	<div id = "instructions">
     <h1 id = "h1">Instructions for Calculating BER vs. SNR for Frequency Shift Keying (FSK)</h1>
     <ul>
-        <li>Step 1: Enter the number of bits and SNR (dB) values in the input fields.</li>
-		<li>Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
-        <li>Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
-		<li>Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
-	    <li>The theoretical BER for binary FSK (BFSK) in an AWGN channel is calculated as:
-BER =  (1/2) * erfc(sqrt(SNR / 2)).</li>
+        <li class="step step1">Step 1: Enter the number of bits and SNR (dB) values in the input fields.</li>
+		<li class="step step2">Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
+        <li class="step step3">Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
+		<li class="step step4">Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
+	    <li class="step step4">The theoretical BER for binary FSK (BFSK) in an AWGN channel is calculated as:
+BER =  (1/2) * erfc(sqrt(SNR_bfsk / 2)).</li>
 		</ul>
 	</div>
     <!-- sidebar and body -->
@@ -73,7 +117,7 @@ BER =  (1/2) * erfc(sqrt(SNR / 2)).</li>
                     type="number"
                     id="numBits"
                     min="1"
-                    value="10000"
+                    value="100000"
                   />
                 </div>
               </div>
@@ -117,12 +161,16 @@ BER =  (1/2) * erfc(sqrt(SNR / 2)).</li>
               <h3 class="flex ml-3 text-[#42c7bc] text-[20px] font-medium">
                 BER Results
               </h3>
+			  <div id = "div">
               <table class="mt-1" id="resultTable">
                 <tr class="bg-slate-300">
                   <th onclick="sortTable(0)">SNR (dB)</th>
                   <th>Bit Error Rate (BER)</th>
                 </tr>
               </table>
+			  </div>
+			  <br/>
+			  <button onclick="printDiv('div')" class="bg-blue-500 text-white p-2 rounded-md">Print</button>			  
             </div>
             <div class="flex-1 basis-3/5">
               <div id="plotDiv"></div>
@@ -131,33 +179,29 @@ BER =  (1/2) * erfc(sqrt(SNR / 2)).</li>
         </div>
       </div>
     </div>
-	  	<script>
-        function checkFrequencies() {
-            // Get values from input fields
-            let carrierFrequency = parseInt(document.getElementById("numBits").value);
-            let bit_rate = 1000000;
-            
-            // Check the frequencies
-            if (carrierFrequency > bit_rate) {
-                alert("1000000 bits is generally sufficient for BER estimation in most scenarios. The number of bits should not exceed 1000000.");
-            window.location.reload(true); 
-			} else {
-                console.log(".");
-            }
-        }
+	<script>
+  function checkFrequencies() {
+    // Get value from input field
+    let snrdB = parseFloat(document.getElementById('snr').value);
 
-        // Function to attach event listeners to all buttons
-        function attachEventListeners() {
-            let buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.addEventListener('click', checkFrequencies);
-            });
-        }
+    // Check if the value is outside the valid range
+    if (snrdB < -10 || snrdB > 10 || isNaN(snrdB)) {
+      alert("Choose SNR (dB) value between -10 to 10.");
+      window.location.reload(); // optional: reload page
+    }
+  }
 
-        // Attach event listeners when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', attachEventListeners);
+  // Attach event listeners to all buttons
+  function attachEventListeners() {
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.addEventListener('click', checkFrequencies);
+    });
+  }
 
-    </script>
+  // Run when DOM is ready
+  document.addEventListener('DOMContentLoaded', attachEventListeners);
+</script>
     <script>
 		function refreshPage() {
     location.reload();
@@ -284,29 +328,69 @@ function updateTable() {
 		updateTable();
       }
 
-      function plotResults() {
-        const snrArray = Array.from(snrSet).sort((a, b) => a - b);
-        const berArray = snrArray.map(snr => results.find(result => result.snrDb === snr).ber);
+function plotResults() {
+  const snrArray = Array.from(snrSet).sort((a, b) => a - b);
+  const berArray = snrArray.map(snr => results.find(result => result.snrDb === snr).ber);
 
-        const trace = {
-          x: snrArray,
-          y: berArray,
-          type: 'scatter',
-          mode: 'lines+markers',
-          name: 'BER vs SNR'
-        };
+  const simulatedTrace = {
+    x: snrArray,
+    y: berArray,
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: 'Simulated'
+  };
 
-        const layout = {
-          title: 'BER vs SNR for FSK',
-          xaxis: { title: 'SNR (dB)' },
-          yaxis: { title: 'BER', type: 'log' },
-        };
+  const theoreticalTrace = {
+    x: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    y: [
+  0.375914817022925,
+  0.361364698511629,
+  0.345275594493536,
+  0.327551765173318,
+  0.308119679065765,
+  0.286941743726049,
+  0.264034207638018,
+  0.239489463025899,
+  0.213502185504006,
+  0.186397281391374,
+  0.158655253931457,
+  0.130927296755524,
+  0.104028637085389,
+  0.0788958719817244,
+  0.0564953017493617,
+  0.0376789881474634,
+  0.0230071388778660,
+  0.0125870331221446,
+  0.00600438640016356,
+  0.00241331041963386,
+  0.000782701129001274
+],
+    mode: "lines+markers",
+    name: "Theoretical",
+    type: "scatter"
+  };
 
-        Plotly.newPlot('plotDiv', [trace], layout);
-      }
+  const layout = {
+    title: 'BER vs SNR for FSK',
+    xaxis: { title: 'SNR (dB)', zeroline: false },
+    yaxis: { title: 'BER', type: 'log', zeroline: false  }
+  };
+
+  Plotly.newPlot('plotDiv', [simulatedTrace, theoreticalTrace], layout);
+}
+
 
       document.getElementById('runSimulationButton').addEventListener('click', runSimulation);
       document.getElementById('plotButton').addEventListener('click', plotResults);
+	  
+	  	          function printDiv(divId) {
+          let content = document.getElementById(divId).innerHTML;
+          let originalContent = document.body.innerHTML;
+        
+          document.body.innerHTML = content; // Replace the entire page with div content
+          window.print();
+          document.body.innerHTML = originalContent; // Restore original page content
+        }
     </script>
   </body>
 </html>
