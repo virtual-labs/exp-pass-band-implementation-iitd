@@ -2,174 +2,174 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "1. How does binary Frequency Shift Keying (BFSK) differentiate between binary 0 and 1?",
+      "question": "1. In a passband ASK system operating over an AWGN channel, which factor most significantly degrades its performance at low SNR?",
       "answers": {
-        "a": "By using different amplitudes for binary 0 and 1.",
-        "b": "By using different phases for binary 0 and 1.",
-        "c": "By using two distinct frequencies for binary 0 and 1.",
-        "d": "By using a combination of amplitude and phase shifts."
+        "a": "Phase distortion",
+        "b": "Amplitude sensitivity to noise",
+        "c": "Bandwidth inefficiency",
+        "d": "Non-coherent demodulation"
       },
       "explanations": {
-        "a": "BFSK does not vary amplitude to differentiate binary data.",
-        "b": "BFSK does not use phase differences to differentiate binary data.",
-        "c": "BFSK uses two distinct frequencies, one for binary 0 and another for binary 1.",
-        "d": "BFSK does not combine amplitude and phase shifts."
+        "a": "Phase distortion affects PSK more than ASK.",
+        "b": "ASK performance degrades rapidly at low SNR because amplitude is directly affected by noise.",
+        "c": "ASK can be bandwidth efficient with proper filtering.",
+        "d": "ASK can use coherent or non-coherent detection, but noise is a larger issue."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "2. In coherent passband FSK systems, how is intersymbol interference (ISI) minimized?",
+      "answers": {
+        "a": "By increasing the frequency deviation",
+        "b": "By using orthogonal frequencies",
+        "c": "By applying raised cosine filtering",
+        "d": "By differential encoding"
+      },
+      "explanations": {
+        "a": "Increasing deviation doesn’t inherently remove ISI.",
+        "b": "Orthogonal frequencies ensure minimal overlap and eliminate ISI.",
+        "c": "Filtering is more applicable in linear modulations like PSK.",
+        "d": "Differential encoding addresses phase ambiguity, not ISI."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "3. Compared to passband PSK, passband FSK is generally more robust in which type of communication channel?",
+      "answers": {
+        "a": "AWGN channels",
+        "b": "Frequency-selective fading channels",
+        "c": "Additive impulsive noise channels",
+        "d": "Flat-fading channels with strong phase jitter"
+      },
+      "explanations": {
+        "a": "PSK may perform better in pure AWGN with coherent detection.",
+        "b": "FSK handles frequency selectivity better due to its spectral spread.",
+        "c": "FSK can be more immune to narrowband impulsive noise.",
+        "d": "FSK is superior under phase jitter because it doesn’t depend on phase."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "4. Why is coherent detection preferred over non-coherent detection in passband PSK systems?",
+      "answers": {
+        "a": "It allows simpler hardware implementation.",
+        "b": "It improves BER performance by recovering phase information.",
+        "c": "It reduces bandwidth consumption.",
+        "d": "It makes the system more robust to frequency offset."
+      },
+      "explanations": {
+        "a": "Coherent detection is more complex, not simpler.",
+        "b": "Recovering phase allows optimal decision boundaries and lower BER.",
+        "c": "Bandwidth is unaffected by coherent vs non-coherent detection.",
+        "d": "Frequency offset tolerance is not the strength of coherent PSK."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "5. What limits the minimum frequency separation in passband binary FSK for orthogonality?",
+      "answers": {
+        "a": "Carrier phase offset",
+        "b": "Modulation index",
+        "c": "Symbol duration",
+        "d": "Signal power"
+      },
+      "explanations": {
+        "a": "Carrier phase does not affect frequency orthogonality.",
+        "b": "Modulation index affects tone spacing, but the base constraint is symbol time.",
+        "c": "Orthogonality in FSK is achieved when frequency separation = 1 / symbol duration.",
+        "d": "Power doesn't impact orthogonality directly."
       },
       "correctAnswer": "c",
-      "difficulty": "intermediate"
+      "difficulty": "advanced"
     },
     {
-      "question": "2. In Phase Shift Keying (PSK), what does the term 'constellation diagram' refer to?",
+      "question": "6. In passband ASK systems, what is the main reason it is rarely used in power-constrained wireless applications?",
       "answers": {
-        "a": "A diagram showing different frequency levels used in modulation.",
-        "b": "A plot representing the complex envelope of the modulated signal.",
-        "c": "A diagram showing various amplitude levels used in modulation.",
-        "d": "A plot representing the time domain representation of the signal."
+        "a": "It requires excessive bandwidth.",
+        "b": "It suffers from poor spectral efficiency.",
+        "c": "It has high peak-to-average power ratio (PAPR).",
+        "d": "It is highly susceptible to amplitude variations from fading."
       },
       "explanations": {
-        "a": "Constellation diagrams do not show frequency levels.",
-        "b": "Constellation diagrams plot the phase and amplitude of a modulated signal on a complex plane.",
-        "c": "Constellation diagrams are not used for amplitude levels in isolation.",
-        "d": "Constellation diagrams are not time domain representations."
+        "a": "ASK can be narrowband.",
+        "b": "Spectral efficiency can be decent depending on shaping.",
+        "c": "ASK usually has lower PAPR than multilevel modulations.",
+        "d": "Correct: fading affects amplitude severely, degrading ASK signals."
       },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
+      "correctAnswer": "d",
+      "difficulty": "advanced"
     },
     {
-      "question": "3. What is a major disadvantage of Amplitude Shift Keying (ASK)?",
+      "question": "7. For Binary PSK in a passband system, what is the theoretical BER expression over an AWGN channel with coherent detection?",
       "answers": {
-        "a": "High power consumption",
-        "b": "High susceptibility to noise",
-        "c": "Complex implementation",
-        "d": "High bandwidth requirement"
+        "a": "Q(√(2Eb/N0))",
+        "b": "Q(√(Eb/N0))",
+        "c": "1/2 × erfc(√(Eb/N0))",
+        "d": "exp(−Eb/N0)"
       },
       "explanations": {
-        "a": "ASK generally does not consume more power than other modulations.",
-        "b": "ASK is highly susceptible to noise because it affects the amplitude, which can be easily distorted.",
-        "c": "ASK is relatively simple to implement.",
-        "d": "ASK does not necessarily have a high bandwidth requirement compared to other modulations."
+        "a": "Correct expression for BER in coherent BPSK over AWGN.",
+        "b": "This is the expression for some non-coherent schemes.",
+        "c": "This is equivalent to option a, but not in standard Q-function form.",
+        "d": "This is an approximation, not exact BER."
       },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
+      "correctAnswer": "a",
+      "difficulty": "advanced"
     },
     {
-      "question": "4. Which digital modulation technique is more robust to non-linear distortion?",
+      "question": "8. What is the impact of Doppler spread on passband PSK systems in mobile channels?",
       "answers": {
-        "a": "Amplitude Shift Keying (ASK)",
-        "b": "Frequency Shift Keying (FSK)",
-        "c": "Phase Shift Keying (PSK)",
-        "d": "All are equally robust"
+        "a": "Causes symbol timing offset",
+        "b": "Induces amplitude fading only",
+        "c": "Destroys carrier phase coherence",
+        "d": "Improves diversity performance"
       },
       "explanations": {
-        "a": "ASK is susceptible to amplitude distortion.",
-        "b": "FSK is less affected by non-linear distortion due to frequency variation.",
-        "c": "PSK can be affected by non-linearities in phase.",
-        "d": "FSK stands out as more robust compared to ASK and PSK."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "5. Which modulation technique is often used for radio frequency (RF) applications due to its robustness to interference?",
-      "answers": {
-        "a": "Amplitude Shift Keying (ASK)",
-        "b": "Frequency Shift Keying (FSK)",
-        "c": "Phase Shift Keying (PSK)",
-        "d": "Pulse Code Modulation (PCM)"
-      },
-      "explanations": {
-        "a": "ASK is not as robust to interference as FSK.",
-        "b": "FSK is used in RF applications due to its robustness to interference.",
-        "c": "PSK is robust but not as commonly used as FSK in RF applications.",
-        "d": "PCM is not a modulation technique used in RF applications."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "6. What is the primary disadvantage of Binary Phase Shift Keying (BPSK) in comparison to other modulation techniques?",
-      "answers": {
-        "a": "BPSK requires higher bandwidth.",
-        "b": "BPSK is less noise-resistant.",
-        "c": "BPSK supports lower data rates.",
-        "d": "BPSK is more complex to implement."
-      },
-      "explanations": {
-        "a": "BPSK actually requires less bandwidth than many other modulations.",
-        "b": "BPSK is generally more noise-resistant than other modulations.",
-        "c": "BPSK supports lower data rates because it transmits one bit per symbol.",
-        "d": "BPSK is simpler to implement compared to more complex modulations."
+        "a": "Timing offset is less influenced by Doppler.",
+        "b": "Doppler causes frequency spreading and phase shifts, not just amplitude fading.",
+        "c": "Correct: Doppler introduces rapid phase changes, challenging phase tracking.",
+        "d": "Doppler usually degrades performance unless counteracted."
       },
       "correctAnswer": "c",
-      "difficulty": "intermediate"
+      "difficulty": "advanced"
     },
     {
-      "question": "7. Which modulation technique is typically used in Bluetooth communication?",
+      "question": "9. In passband FSK systems, what is the role of the modulation index (h) in performance?",
       "answers": {
-        "a": "Amplitude Shift Keying (ASK)",
-        "b": "Frequency Shift Keying (FSK)",
-        "c": "Phase Shift Keying (PSK)",
-        "d": "Time Division Multiplexing (TDM)"
+        "a": "Controls symbol timing accuracy",
+        "b": "Determines orthogonality and bandwidth trade-off",
+        "c": "Reduces phase jitter",
+        "d": "Increases immunity to amplitude fading"
       },
       "explanations": {
-        "a": "ASK is not typically used in Bluetooth communication.",
-        "b": "FSK is used in Bluetooth, specifically Gaussian FSK (GFSK).",
-        "c": "PSK is not the primary modulation technique used in Bluetooth.",
-        "d": "TDM is a multiplexing technique, not a modulation technique."
+        "a": "Timing is not controlled by modulation index.",
+        "b": "Correct: h = Δf × Tb; controls frequency separation and impacts bandwidth/ISI.",
+        "c": "Phase jitter is a PSK issue.",
+        "d": "Amplitude fading resistance comes from frequency-based modulation itself."
       },
       "correctAnswer": "b",
-      "difficulty": "intermediate"
+      "difficulty": "advanced"
     },
     {
-      "question": "8. In digital communication, what is the primary purpose of using modulation techniques such as ASK, FSK, and PSK?",
+      "question": "10. For a passband PSK system under ideal coherent detection, what characteristic of the constellation helps minimize BER?",
       "answers": {
-        "a": "To decrease the bandwidth requirement.",
-        "b": "To increase the complexity of the system.",
-        "c": "To adapt the signal for transmission over various media.",
-        "d": "To minimize power consumption."
+        "a": "Equal amplitude and orthogonal phase spacing",
+        "b": "Non-uniform amplitude levels",
+        "c": "Frequency separation between points",
+        "d": "Use of raised cosine pulses"
       },
       "explanations": {
-        "a": "Modulation does not necessarily decrease bandwidth requirements.",
-        "b": "Modulation can increase system complexity but that is not the primary purpose.",
-        "c": "Modulation allows signals to be transmitted efficiently over different media types.",
-        "d": "Modulation is not primarily used to minimize power consumption."
+        "a": "Equal amplitude and uniform phase spacing ensure maximized distance between symbols.",
+        "b": "PSK does not vary amplitude.",
+        "c": "Frequency separation applies to FSK, not PSK.",
+        "d": "Pulse shaping reduces ISI, not BER directly under ideal detection."
       },
-      "correctAnswer": "c",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "9. How does non-coherent FSK differ from coherent FSK?",
-      "answers": {
-        "a": "Non-coherent FSK requires carrier phase synchronization.",
-        "b": "Non-coherent FSK does not require carrier phase synchronization.",
-        "c": "Non-coherent FSK uses a single frequency for all bits.",
-        "d": "Non-coherent FSK is more complex to implement."
-      },
-      "explanations": {
-        "a": "Non-coherent FSK does not require synchronization, unlike coherent FSK.",
-        "b": "Non-coherent FSK does not require phase synchronization, making it simpler.",
-        "c": "Non-coherent FSK still uses multiple frequencies.",
-        "d": "Non-coherent FSK is generally simpler to implement than coherent FSK."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "10. In PSK, what is the result of increasing the number of phase states in terms of data transmission?",
-      "answers": {
-        "a": "Decreases the data rate.",
-        "b": "Increases the error rate.",
-        "c": "Increases the data rate.",
-        "d": "Decreases the bandwidth requirement."
-      },
-      "explanations": {
-        "a": "Increasing phase states generally increases the data rate.",
-        "b": "More phase states can make the system more susceptible to noise, but it increases data rate.",
-        "c": "Increasing phase states allows more bits to be transmitted per symbol, increasing data rate.",
-        "d": "It does not necessarily decrease bandwidth requirements."
-      },
-      "correctAnswer": "c",
-      "difficulty": "intermediate"
+      "correctAnswer": "a",
+      "difficulty": "advanced"
     }
   ]
 }

@@ -11,10 +11,10 @@
 <div id = "container">
     <h1>Instructions for Binary Amplitude Shift Keying Modulation (both Baseband and Passband)</h1>
     <ul>
-        <li>Step 1: Click on 'Generate Message' button to generate input message signal</li>
-        <li>Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
-		<li>Step 3: You can change the carrier signal frequency from the input field</li>
-        <li>Step 4: Click on 'Simulate ASK' button to generate Amplitude Shift Keying Signal</li>
+        <li class="step step1">Step 1: Click on 'Generate Message' button to generate input message signal</li>
+        <li class="step step2">Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
+		<li class="step step3">Step 3: You can change the carrier signal frequency from the input field</li>
+        <li class="step step4">Step 4: Click on 'Simulate ASK' button to generate Amplitude Shift Keying Signal</li>
     </ul>
 <br/>
 
@@ -143,9 +143,9 @@
   <div id = "container">
     <h1>Instructions for Binary Amplitude Shift Keying (BASK) Demodulation</h1>
     <ul>
-		<li>Step 1: You can Demodulate the ASK Signal clicking on the 'Demodulate ASK' button</li>
-		<li>Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
-		<li>Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+		<li class="step step1">Step 1: You can Demodulate the ASK Signal clicking on the 'Demodulate ASK' button</li>
+		<li class="step step2">Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
+		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
     </ul>
 </div>	
   
@@ -504,30 +504,68 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     text-align: center;
 }
 
+#container {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 25px 40px;
+  max-width: 100%;
+  margin: 20px auto;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 h1 {
-    color: #333;
-    font-size: 22px; /* Increased font size */
-    margin-bottom: 20px;
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: justify;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-li {
-    background-color: #e0e7ff;
-    margin: 5px 0;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 14px; /* Set font size for list items */
+li.step {
+  margin: 12px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-li::before {
-    content: "✔";
-    color: #4caf50;
-    margin-right: 10px;
+li.step::before {
+  content: "✔";
+  color: #10b981;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+li.step:hover {
+  transform: scale(1.02);
+  background-color: #f3f4f6;
+}
+
+/* Color code each step */
+.step1 {
+  background-color: #ffe0e0;
+  border-left: 5px solid #ef4444;
+}
+.step2 {
+  background-color: #e0f7ff;
+  border-left: 5px solid #0ea5e9;
+}
+.step3 {
+  background-color: #e0ffe5;
+  border-left: 5px solid #22c55e;
+}
+.step4 {
+  background-color: #f5e0ff;
+  border-left: 5px solid #a855f7;
 }
 
   </style>

@@ -26,24 +26,68 @@
     font-size: 22px; /* Increased font size */
     margin-bottom: 20px;
 }
-	ul {
-    list-style-type: none;
-    padding: 0;
+#container {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 25px 40px;
+  max-width: 100%;
+  margin: 20px auto;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-li {
-    background-color: #e0e7ff;
-    margin: 5px 0;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 14px; /* Set font size for list items */
+h1 {
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: justify;
 }
 
-li::before {
-    content: "✔";
-    color: #4caf50;
-    margin-right: 10px;
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.step {
+  margin: 12px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+li.step::before {
+  content: "✔";
+  color: #10b981;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+li.step:hover {
+  transform: scale(1.02);
+  background-color: #f3f4f6;
+}
+
+/* Color code each step */
+.step1 {
+  background-color: #ffe0e0;
+  border-left: 5px solid #ef4444;
+}
+.step2 {
+  background-color: #e0f7ff;
+  border-left: 5px solid #0ea5e9;
+}
+.step3 {
+  background-color: #e0ffe5;
+  border-left: 5px solid #22c55e;
+}
+.step4 {
+  background-color: #f5e0ff;
+  border-left: 5px solid #a855f7;
 }
 	</style>
 
@@ -52,12 +96,12 @@ li::before {
 	<div id = "instructions">
     <h1 id = "h1">Instructions for Calculating BER vs. SNR for Phase Shift Keying (PSK)</h1>
     <ul>
-        <li>Step 1: Enter the number of bits and SNR (dB) values in the input fields.</li>
-		<li>Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
-        <li>Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
-		<li>Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
-	    <li>The theoretical BER for binary PSK (BPSK) in an AWGN channel is calculated as:
- BER = 0.5 * erfc(sqrt(SNR_bpsk)).</li>
+        <li class="step step1">Step 1: Enter the number of bits and SNR (dB) values in the input fields.</li>
+		<li class="step step2">Step 2: Click on the "Calculate BER" button to view the BER value for the corresponding SNR (dB) value.</li>
+        <li class="step step3">Step 3: Click on the "Plot BER vs. SNR" button to plot the results.</li>
+		<li class="step step4">Step 4: Remember to reset the simulator if you change the number of bits, to plot BER vs. SNR for the updated bit count.</li>
+	    <li class="step step1">The theoretical BER for binary PSK (BPSK) in an AWGN channel is given by:
+ BER = 0.5 * erfc(sqrt(SNR)).</li>
 		</ul>
 	</div>
     <!-- sidebar and body -->
@@ -74,7 +118,7 @@ li::before {
                     type="number"
                     id="numBits"
                     min="1"
-                    value="10000"
+                    value="100000"
                   />
                 </div>
               </div>
@@ -116,12 +160,16 @@ li::before {
               <h3 class="flex ml-3 text-[#42c7bc] text-[20px] font-medium">
                 BER Results
               </h3>
+			  <div id = "div">
               <table class="mt-1" id="dataTable">
                 <tr class="bg-slate-300">
                   <th onclick="sortTable(0)">SNR (dB)</th>
                   <th>BER</th>
                 </tr>
               </table>
+			  </div>
+			  <br/>
+			  <button onclick="printDiv('div')" class="bg-blue-500 text-white p-2 rounded-md">Print</button>			  
             </div>
             <div class="flex-1 basis-3/5">
               <div id="plot"></div>
@@ -131,33 +179,29 @@ li::before {
         </div>
       </div>
     </div>
-	  	<script>
-        function checkFrequencies() {
-            // Get values from input fields
-            let carrierFrequency = parseInt(document.getElementById("numBits").value);
-            let bit_rate = 1000000;
-            
-            // Check the frequencies
-            if (carrierFrequency > bit_rate) {
-                alert("1000000 bits is generally sufficient for BER estimation in most scenarios. The number of bits should not exceed 1000000.");
-            window.location.reload(true); 
-			} else {
-                console.log(".");
-            }
-        }
+		<script>
+  function checkFrequencies() {
+    // Get value from input field
+    let snrdB = parseFloat(document.getElementById('snr').value);
 
-        // Function to attach event listeners to all buttons
-        function attachEventListeners() {
-            let buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.addEventListener('click', checkFrequencies);
-            });
-        }
+    // Check if the value is outside the valid range
+    if (snrdB < -10 || snrdB > 10 || isNaN(snrdB)) {
+      alert("Choose SNR (dB) value between -10 to 10.");
+      window.location.reload(); // optional: reload page
+    }
+  }
 
-        // Attach event listeners when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', attachEventListeners);
+  // Attach event listeners to all buttons
+  function attachEventListeners() {
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.addEventListener('click', checkFrequencies);
+    });
+  }
 
-    </script>
+  // Run when DOM is ready
+  document.addEventListener('DOMContentLoaded', attachEventListeners);
+</script>
     <script>
 		function refreshPage() {
     location.reload();
@@ -175,7 +219,7 @@ li::before {
         let SNRdB = [snr]; // Use the provided SNR
         let SNR = SNRdB.map((snr) => Math.pow(10, snr / 10));
 
-        let max_run = 20; // Maximum number of iterations for a single SNR
+        let max_run = 50; // Maximum number of iterations for a single SNR
         let Eb = 1; // Bit energy
 
         let BER_sim = new Array(SNR.length).fill(0);
@@ -250,18 +294,49 @@ li::before {
             x: snrValues,
             y: berValues,
             mode: "lines+markers",
-            name: "Simulated BER",
+            name: "Simulated",
           },
+		        {
+        x: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        y: [
+  0.327360423009289,
+  0.307910470715079,
+  0.286714527581443,
+  0.263789505256266,
+  0.239228710767672,
+  0.213228018357620,
+  0.186113817483389,
+  0.158368318809598,
+  0.130644488522829,
+  0.103759095953406,
+  0.0786496035251426,
+  0.0562819519765415,
+  0.0375061283589260,
+  0.0228784075610853,
+  0.0125008180407376,
+  0.00595386714777866,
+  0.00238829078093281,
+  0.000772674815378444,
+  0.000190907774075993,
+  3.36272284196175e-05,
+  3.87210821552204e-06
+],
+        mode: "lines+markers",
+        name: "Theoretical",
+        type: "scatter",
+      },
         ];
 
         let layout = {
           title: "PSK BER Simulation from Table Data",
           xaxis: {
             title: "SNR (dB)",
+			zeroline: false
           },
           yaxis: {
             title: "BER",
             type: "log",
+			zeroline: false
           },
         };
 
@@ -369,6 +444,15 @@ li::before {
           }
         }
       }
+	  
+	  	          function printDiv(divId) {
+          let content = document.getElementById(divId).innerHTML;
+          let originalContent = document.body.innerHTML;
+        
+          document.body.innerHTML = content; // Replace the entire page with div content
+          window.print();
+          document.body.innerHTML = originalContent; // Restore original page content
+        }
     </script>
   </body>
 </html>
