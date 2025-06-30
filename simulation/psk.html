@@ -1,0 +1,550 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Virtual Labs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+	<div id = "container">
+    <h1>Instructions for Binary Phase Shift Keying Modulation (both Baseband and Passband)</h1>
+    <ul>
+        <li class="step step1">Step 1: Click on 'Generate Message' button to generate input message signal</li>
+        <li class="step step2">Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
+		<li class="step step3">Step 3: You can change the carrier signal frequency from the input fields</li>
+        <li class="step step4">Step 4: Click on 'Simulate PSK' button to generate Phase Shift Keying Signal</li>
+    </ul>
+<br/>
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 basis-4/5 flex flex-col">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <label
+                    for="carrier_frequency"
+                    class="text-[#2c99ce] font-medium"
+                    >Carrier Frequency in Hz:</label
+                  >
+                  <input
+                    class="border ml-5 border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="carrier_frequency"
+                    value="20"
+                  />
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <label for="phaseshift" class="text-[#2c99ce] font-medium"
+                    ></label
+                  >
+                  <select
+                    class="border border-black px-2 py-[3px] ml-6 rounded-sm"
+                    id="phase_shift"
+                  >
+                    <option value="1">π</option>
+                    <option value="π/2">π/2</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <label
+                    for="sampling_frequency"
+                    class="text-[#2c99ce] font-medium"
+                    >Sampling Frequency in Hz:</label
+                  >
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="sampling_frequency"
+                    value="1000"
+                  />
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <label for="num_bits" class="text-[#2c99ce] font-medium"
+                    >Number of Bits:</label
+                  >
+                  <input
+                    class="border px-2 border-black py-1 rounded-sm"
+                    type="number"
+                    id="num_bits"
+                    value="5"
+                  />
+                </div>
+              </div>
+			  <div class="flex-1">
+  <div class="flex items-center gap-2">
+    <label for="bit_rate" class="text-[#2c99ce] font-medium">Bit Rate (bps):</label>
+    <input
+      class="border px-2 border-black py-1 rounded-sm"
+      type="number"
+      id="bit_rate"
+      value="10"
+    />
+  </div>
+</div>
+
+            </div>
+          </div>
+          <div class="flex-1 flex flex-col basis-1/5">
+            <div class="flex justify-center pt-4">
+
+
+              </a>
+            </div>
+            <div class="flex justify-center pt-4">
+
+
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex flex-col">
+
+            <div class="flex gap-2">
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-[550px]">
+                  <img
+                    class="w-[100%] h-[100%]"
+                    src=".././images/simulation/psk_mod.png"
+                    alt="psk_mod"
+                  />
+                </div>
+<!-- Vertical stack -->
+<div class="flex flex-col items-center pt-4">
+    <button class="bg-blue-500 text-white rounded-md px-2 py-1 mb-2" onclick="generateMessageSignal()">
+        Generate Message
+    </button>
+    <button class="bg-blue-500 text-white rounded-md px-2 py-1 mb-2" onclick="generateCarrierSignal()">
+        Generate Carrier
+    </button>
+    <button class="bg-blue-500 text-white rounded-md px-2 py-1" onclick="generatePSKModulatedSignal()">
+        Simulate PSK
+    </button>
+</div>
+              </div>
+              <div class="flex flex-1 flex-col justify-center items-center">
+			  <div class="max-h-[400px]" id="modulated-plot"></div>
+			  <div class="max-h-[400px]" id="bpskSignal"></div>
+			  <div class="max-h-[400px]" id="carrier-plot"></div>
+                <div class="max-h-[400px]" id="original"></div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	
+	<br/><br/><hr/>
+	    <!-- sidebar and body -->
+			  <div id = "container">
+    <h1>Instructions for Biary Phase Shift Keying (BPSK) Demodulation</h1>
+    <ul>
+		<li class="step step1">Step 1: You can Demodulate the FSK Signal clicking on the 'Demodulate PSK' button</li>
+		<li class="step step2">Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
+		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+    </ul>
+</div>
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 basis-4/5 flex flex-col">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+
+
+            </div>
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+ 
+
+            </div>
+          </div>
+          <div class="flex-1 flex flex-col basis-1/5">
+            <div class="flex justify-center pt-4">
+              <a href="../bervssnr/PSK_BervsSnr.html">
+                <button class="bg-blue-500 text-white rounded-md px-5 py-1">
+                  Generate BERvsSNR
+                </button>
+              </a>
+            </div>
+            <div class="flex justify-center pt-4">
+              <a href="../constellation/psk_constellation.html">
+                <button class="bg-blue-500 text-white rounded-md px-2 py-1">
+                  Generate Constellation
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex flex-col">
+            <div class="flex justify-center pt-4">
+              <button
+                class="bg-blue-500 text-white rounded-md px-2 py-1"
+                class="button"
+                onclick="demodulateSignal()"
+              >
+                Demodulate PSK
+              </button>
+            </div>
+            <div class="flex gap-1">
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full">
+                  <img
+                    class="w-[100%] h-[100%]"
+                    src=".././images/simulation/psk_demod2.png"
+                    alt="psk1"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col justify-center items-center">
+                <div class="max-h-[400px]" id="demodulated-plot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  -->
+      </div>
+    </div>
+	
+	
+ 
+     <script>
+        function checkFrequencies() {
+            // Get values from input fields
+            let carrierFrequency = parseFloat(document.getElementById('carrier_frequency').value);
+            let bit_rate = parseFloat(document.getElementById('bit_rate').value);
+            
+            // Check the frequencies
+            if (carrierFrequency <= bit_rate) {
+                alert("Carrier frequency should be much higher than bit rate.");
+            } else {
+                console.log("Carrier frequency should be much high than bit rate.");
+            }
+        }
+
+        // Function to attach event listeners to all buttons
+        function attachEventListeners() {
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', checkFrequencies);
+            });
+        }
+
+        // Attach event listeners when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', attachEventListeners);
+
+    </script>
+	
+    <script>
+        let bits = [];
+        let modulated_signal = [];
+        let Fs = 0;
+        let fc = 0;
+        let num_bits = 0;
+        let phase_shift_value = 0;
+
+        function generateMessageSignal() {
+            num_bits = parseInt(document.getElementById("num_bits").value);
+
+            // Generate random bits
+            bits = Array.from({ length: num_bits }, () => Math.round(Math.random()));
+
+            // Representation of transmitting binary information as a digital signal
+            const { bitx, tx } = representDigitalSignal(bits);
+
+            // Plot original signal
+            const originalData = [{
+                x: tx,
+                y: bitx.flat(),
+                type: "scatter",
+                mode: "lines",
+                name: "Binary Information at Transmitter",
+            }];
+
+            const originalLayout = {
+                title: "Binary Information at Transmitter",
+                xaxis: { title: "Time (s)" },
+                yaxis: { title: "Bit Value" },
+            };
+
+            Plotly.newPlot("original", originalData, originalLayout);
+        }
+
+        function generateCarrierSignal() {
+            Fs = parseInt(document.getElementById("sampling_frequency").value);
+            fc = parseInt(document.getElementById("carrier_frequency").value);
+            const t = Array.from({ length: 1 * Fs }, (_, i) => i / Fs);
+            const carrier_signal = t.map((time) => Math.sin(2 * Math.PI * fc * time));
+
+            const carrierData = [{
+                x: t,
+                y: carrier_signal,
+                type: "scatter",
+                mode: "lines",
+                name: "Carrier Signal",
+            }];
+
+            const carrierLayout = {
+                title: "Carrier Signal",
+                xaxis: { title: "Time (s)" },
+                yaxis: { title: "Amplitude" },
+            };
+
+            Plotly.newPlot("carrier-plot", carrierData, carrierLayout);
+        }
+
+        function plotBPSKSignal() {
+		bit_rate = parseInt(document.getElementById("bit_rate").value);
+numSymbols = bits.length;
+bitsf = bits.map(bit => bit === 0 ? -1 : 1);
+    Plotly.newPlot('bpskSignal', [{
+        x: bitsf.flatMap((_, idx) => [idx/bit_rate, (idx + 1)/bit_rate]),
+        y: bitsf.flatMap(val => [val, val]),
+        mode: 'lines',
+        type: 'scatter',
+        marker: { color: 'blue' }
+    }], {
+        title: 'Baseband BPSK Modulated Signal',
+        yaxis: { title: 'Volts' }
+    });
+	//document.getElementById('scrolltonrz').scrollIntoView({ behavior: 'smooth' });
+    }
+		
+	    function generatePSKModulatedSignal() {
+		    plotBPSKSignal();
+            Fs = parseInt(document.getElementById("sampling_frequency").value);
+            fc = parseInt(document.getElementById("carrier_frequency").value);
+			bit_rate = parseInt(document.getElementById("bit_rate").value);
+            num_bits = parseInt(document.getElementById("num_bits").value);
+            phase_shift_value = parseFloat(document.getElementById("phase_shift").value);
+
+            // PSK modulation
+            const t = Array.from({ length: Math.floor(Fs) }, (_, i) => i / Fs);
+            modulated_signal = [];
+            const phase_shift = Math.PI * phase_shift_value;
+
+            for (const bit of bits) {
+                const phase = bit === 0 ? 0 : phase_shift;
+                const signal = t.map((time) => Math.sin(2 * Math.PI * fc * time + phase));
+                modulated_signal = modulated_signal.concat(signal);
+            }
+
+            // Plot modulated signal
+            const modulatedData = [{
+                x: Array.from({ length: modulated_signal.length }, (_, i) => (i / Fs)/bit_rate),
+                y: modulated_signal,
+                type: "scatter",
+                mode: "lines",
+                name: "Modulated Signal",
+            }];
+
+            const modulatedLayout = {
+                title: "Passband BPSK Modulated Signal",
+                xaxis: { title: "Time (s)" },
+                yaxis: { title: "Amplitude" },
+            };
+
+            Plotly.newPlot("modulated-plot", modulatedData, modulatedLayout);
+        }
+
+       function demodulateSignal() {
+    // Ensure the modulated signal has been generated
+    if (modulated_signal.length === 0) {
+        alert("Please generate the modulated signal first.");
+        return;
+    }
+
+    const demodulated_signal = [];
+    const t = Array.from({ length: Math.floor(Fs) }, (_, i) => i / Fs);
+
+    for (let i = 0; i < num_bits; i++) {
+        const startIndex = i * Math.floor(Fs);
+        const segment = modulated_signal.slice(startIndex, startIndex + Math.floor(Fs));
+
+        // Compute correlation with reference signal (sinusoid with 0 phase)
+        const reference_signal = t.map((time) => Math.sin(2 * Math.PI * fc * time));
+        const correlation = segment.reduce((acc, val, index) => acc + val * reference_signal[index], 0);
+
+        // If correlation is positive, demodulate as bit 0; otherwise, demodulate as bit 1
+        demodulated_signal.push(correlation < 0 ? 1 : 0);
+    }
+
+    const bits2 = demodulated_signal;
+
+    // Representation of transmitting binary information as a digital signal
+    const { bitx: bitx2, tx: tx2 } = representDigitalSignal(bits2);
+
+    // Plot demodulated signal
+    const demodulatedData = [{
+        x: tx2,
+        y: bitx2.flat(),
+        type: "scatter",
+        mode: "lines",
+        name: "Demodulated Signal",
+    }];
+    const demodulatedLayout = {
+        title: "Demodulated Bits",
+        xaxis: { title: "Time (s)" },
+        yaxis: { title: "Bit Value" },
+    };
+
+    Plotly.newPlot("demodulated-plot", demodulatedData, demodulatedLayout);
+}
+
+function plotGraphs(result) {
+    // Get the baud rate and compute scaling factor for time
+    baudRateformessage = parseFloat(document.getElementById("baudRateInput").value);
+    let k = 10000 / baudRateformessage; // Replace with your desired constant
+
+    // Multiply each x value by the constant
+    let scaledTime = result.time.map(t => t * k);
+
+    // Represent the digital signal from the bitstream
+    const digitalSignal = representDigitalSignal(result.bitstream);
+
+    let digitalTrace = {
+        x: digitalSignal.tx,  // Digital time values
+        y: digitalSignal.bitx.flat(),  // Flatten the array of binary bits
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Digital Signal',
+        line: {
+            shape: 'hv' // Step-like horizontal-vertical (HV) lines for digital signals
+        }
+    };
+
+    let digitalLayout = {
+        title: 'Digital Representation of Bitstream',
+        xaxis: {
+            title: 'Time (s)'
+        },
+        yaxis: {
+            title: 'Bit Value',
+            range: [-0.1, 1.1] // Limit y-axis range to fit binary values
+        }
+    };
+
+    let digitalData = [digitalTrace];
+
+    // Plot the digital signal using Plotly
+    Plotly.newPlot('digitalPlot', digitalData, digitalLayout);
+}
+
+function representDigitalSignal(bitsx) {
+    const bitx = [];
+    const Fs = parseInt(document.getElementById("sampling_frequency").value);
+    const bps = parseInt(document.getElementById("bit_rate").value);
+    const bp = 1 / bps; // Bit period
+
+    // Represent each bit as a sequence of 0s or 1s
+    for (let n = 0; n < bitsx.length; n++) {
+        bitx.push(Array(Fs).fill(bitsx[n]));
+    }
+
+    // Flatten time and bit arrays
+    const tx = [];
+    for (let i = 1; i <= Fs * bitsx.length; i++) {
+        tx.push((i * bp) / Fs);
+    }
+
+    return { bitx, tx };
+}
+
+	
+    </script>
+	
+	
+	<style>
+	#phase_shift {
+	display: none;
+	}
+	  .container {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px 40px;
+    max-width: 1000px; /* Increased max-width to fit three plots side by side */
+    margin: 0 auto; /* Center the container */
+    text-align: center;
+}
+
+#container {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 25px 40px;
+  max-width: 100%;
+  margin: 20px auto;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: justify;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.step {
+  margin: 12px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+li.step::before {
+  content: "✔";
+  color: #10b981;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+li.step:hover {
+  transform: scale(1.02);
+  background-color: #f3f4f6;
+}
+
+/* Color code each step */
+.step1 {
+  background-color: #ffe0e0;
+  border-left: 5px solid #ef4444;
+}
+.step2 {
+  background-color: #e0f7ff;
+  border-left: 5px solid #0ea5e9;
+}
+.step3 {
+  background-color: #e0ffe5;
+  border-left: 5px solid #22c55e;
+}
+.step4 {
+  background-color: #f5e0ff;
+  border-left: 5px solid #a855f7;
+}
+	</style>
+	
+  </body>
+</html>

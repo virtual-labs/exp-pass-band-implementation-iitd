@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "1. In a passband ASK system operating over an AWGN channel, which factor most significantly degrades its performance at low SNR?",
+      "answers": {
+        "a": "Phase distortion",
+        "b": "Amplitude sensitivity to noise",
+        "c": "Bandwidth inefficiency",
+        "d": "Non-coherent demodulation"
+      },
+      "explanations": {
+        "a": "Phase distortion affects PSK more than ASK.",
+        "b": "ASK performance degrades rapidly at low SNR because amplitude is directly affected by noise.",
+        "c": "ASK can be bandwidth efficient with proper filtering.",
+        "d": "ASK can use coherent or non-coherent detection, but noise is a larger issue."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "2. In coherent passband FSK systems, how is intersymbol interference (ISI) minimized?",
+      "answers": {
+        "a": "By increasing the frequency deviation",
+        "b": "By using orthogonal frequencies",
+        "c": "By applying raised cosine filtering",
+        "d": "By differential encoding"
+      },
+      "explanations": {
+        "a": "Increasing deviation doesn’t inherently remove ISI.",
+        "b": "Orthogonal frequencies ensure minimal overlap and eliminate ISI.",
+        "c": "Filtering is more applicable in linear modulations like PSK.",
+        "d": "Differential encoding addresses phase ambiguity, not ISI."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "3. Compared to passband PSK, passband FSK is generally more robust in which type of communication channel?",
+      "answers": {
+        "a": "AWGN channels",
+        "b": "Frequency-selective fading channels",
+        "c": "Additive impulsive noise channels",
+        "d": "Flat-fading channels with strong phase jitter"
+      },
+      "explanations": {
+        "a": "PSK may perform better in pure AWGN with coherent detection.",
+        "b": "FSK handles frequency selectivity better due to its spectral spread.",
+        "c": "FSK can be more immune to narrowband impulsive noise.",
+        "d": "FSK is superior under phase jitter because it doesn’t depend on phase."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "4. Why is coherent detection preferred over non-coherent detection in passband PSK systems?",
+      "answers": {
+        "a": "It allows simpler hardware implementation.",
+        "b": "It improves BER performance by recovering phase information.",
+        "c": "It reduces bandwidth consumption.",
+        "d": "It makes the system more robust to frequency offset."
+      },
+      "explanations": {
+        "a": "Coherent detection is more complex, not simpler.",
+        "b": "Recovering phase allows optimal decision boundaries and lower BER.",
+        "c": "Bandwidth is unaffected by coherent vs non-coherent detection.",
+        "d": "Frequency offset tolerance is not the strength of coherent PSK."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "5. What limits the minimum frequency separation in passband binary FSK for orthogonality?",
+      "answers": {
+        "a": "Carrier phase offset",
+        "b": "Modulation index",
+        "c": "Symbol duration",
+        "d": "Signal power"
+      },
+      "explanations": {
+        "a": "Carrier phase does not affect frequency orthogonality.",
+        "b": "Modulation index affects tone spacing, but the base constraint is symbol time.",
+        "c": "Orthogonality in FSK is achieved when frequency separation = 1 / symbol duration.",
+        "d": "Power doesn't impact orthogonality directly."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "6. In passband ASK systems, what is the main reason it is rarely used in power-constrained wireless applications?",
+      "answers": {
+        "a": "It requires excessive bandwidth.",
+        "b": "It suffers from poor spectral efficiency.",
+        "c": "It has high peak-to-average power ratio (PAPR).",
+        "d": "It is highly susceptible to amplitude variations from fading."
+      },
+      "explanations": {
+        "a": "ASK can be narrowband.",
+        "b": "Spectral efficiency can be decent depending on shaping.",
+        "c": "ASK usually has lower PAPR than multilevel modulations.",
+        "d": "Correct: fading affects amplitude severely, degrading ASK signals."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "7. For Binary PSK in a passband system, what is the theoretical BER expression over an AWGN channel with coherent detection?",
+      "answers": {
+        "a": "Q(√(2Eb/N0))",
+        "b": "Q(√(Eb/N0))",
+        "c": "1/2 × erfc(√(Eb/N0))",
+        "d": "exp(−Eb/N0)"
+      },
+      "explanations": {
+        "a": "Correct expression for BER in coherent BPSK over AWGN.",
+        "b": "This is the expression for some non-coherent schemes.",
+        "c": "This is equivalent to option a, but not in standard Q-function form.",
+        "d": "This is an approximation, not exact BER."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "8. What is the impact of Doppler spread on passband PSK systems in mobile channels?",
+      "answers": {
+        "a": "Causes symbol timing offset",
+        "b": "Induces amplitude fading only",
+        "c": "Destroys carrier phase coherence",
+        "d": "Improves diversity performance"
+      },
+      "explanations": {
+        "a": "Timing offset is less influenced by Doppler.",
+        "b": "Doppler causes frequency spreading and phase shifts, not just amplitude fading.",
+        "c": "Correct: Doppler introduces rapid phase changes, challenging phase tracking.",
+        "d": "Doppler usually degrades performance unless counteracted."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "9. In passband FSK systems, what is the role of the modulation index (h) in performance?",
+      "answers": {
+        "a": "Controls symbol timing accuracy",
+        "b": "Determines orthogonality and bandwidth trade-off",
+        "c": "Reduces phase jitter",
+        "d": "Increases immunity to amplitude fading"
+      },
+      "explanations": {
+        "a": "Timing is not controlled by modulation index.",
+        "b": "Correct: h = Δf × Tb; controls frequency separation and impacts bandwidth/ISI.",
+        "c": "Phase jitter is a PSK issue.",
+        "d": "Amplitude fading resistance comes from frequency-based modulation itself."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "10. For a passband PSK system under ideal coherent detection, what characteristic of the constellation helps minimize BER?",
+      "answers": {
+        "a": "Equal amplitude and orthogonal phase spacing",
+        "b": "Non-uniform amplitude levels",
+        "c": "Frequency separation between points",
+        "d": "Use of raised cosine pulses"
+      },
+      "explanations": {
+        "a": "Equal amplitude and uniform phase spacing ensure maximized distance between symbols.",
+        "b": "PSK does not vary amplitude.",
+        "c": "Frequency separation applies to FSK, not PSK.",
+        "d": "Pulse shaping reduces ISI, not BER directly under ideal detection."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}
