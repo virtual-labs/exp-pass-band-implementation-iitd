@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<div id = "modulation">
 <div id = "container">
     <h1>Instructions for Binary Amplitude Shift Keying Modulation (both Baseband and Passband)</h1>
 	    <ul>
@@ -17,7 +18,7 @@
     
       <li class="step step2"><strong>Step 2:</strong> Then click on <em>'Generate Carrier'</em> button to generate carrier signal.</li>
     
-      <li class="step step3"><strong>Step 3:</strong> Click on <em>'Simulate ASK'</em> button to generate both baseband and passband Amplitude Shift Keying Signals.</li>
+      <li class="step step3"><strong>Step 3:</strong> Click on <em>'Simulate ASK'</em> button to generate the both baseband and passband Amplitude Shift Keying Signal.</li>
         </ul>
 <br/>
 
@@ -141,15 +142,15 @@
     </div>
   </div>
   
-  <div id = "demodulation">
   <br/><br/><hr/>
+  </div></div>
   
   <div id = "container">
     <h1>Instructions for Binary Amplitude Shift Keying (BASK) Demodulation</h1>
     <ul>
 		<li class="step step1">Step 1: You can Demodulate the ASK Signal clicking on the 'Demodulate ASK' button</li>
 		<li class="step step2">Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
-		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram of binary ASK</li>
     </ul>
 </div>	
   
@@ -195,7 +196,6 @@
     </div>
   </div>
 	
-	</div>
 	     <script>
         function checkFrequencies() {
             // Get values from input fields
@@ -227,6 +227,7 @@
     let messageSignal = null;
     let f = null;
     let m = null;
+	let fc = null;
     let fs = null;
     let t2 = null; // Define t2 here to make it accessible globally
     let bp = null; // Define bp here to make it accessible globally
@@ -360,7 +361,6 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
       Plotly.newPlot("modulated-plot", modulatedData, {
         title: "Passband BASK Modulated Signal",
       });
-	  	  saveData();
     }
 
     let isCarrierGenerated = false; // Track if carrier is generated
@@ -409,9 +409,9 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
         console.error("Message signal is not generated yet.");
         return;
       }
-
-      const fc = parseInt(document.getElementById("carrier_frequency").value);
-      const bitRate = parseInt(document.getElementById("bit_rate").value);
+	  let fs = parseInt(document.getElementById("sampling_frequency").value);
+      let fc = parseInt(document.getElementById("carrier_frequency").value);
+      let bitRate = parseInt(document.getElementById("bit_rate").value);
       const bitDuration = 1 / bitRate;
       const numSamples = Math.floor(fs);
       const t = Array.from({ length: numSamples }, (_, i) => i / fs);
@@ -482,6 +482,8 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     }
 
     function representDigitalSignal(bits) {
+	  let fs = parseInt(document.getElementById("sampling_frequency").value);
+      let bitRate = parseInt(document.getElementById("bit_rate").value);
       const bitx = [];
       const bp = 1 / bitRate; // Bit period
       for (let n = 0; n < bits.length; n++) {
@@ -498,24 +500,32 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
       return { bitx, tx }; // Return the digital signal and corresponding time instances
     }
 	
-	  function saveData() {
-  const fs = parseFloat(document.getElementById('sampling_frequency').value);
-  const fc = parseFloat(document.getElementById('carrier_frequency').value);
- const bitRate = parseFloat(document.getElementById('bit_rate').value);
+	
+	  function loadData() {
+  const data = localStorage.getItem('sharedData');
+  if (data) {
+    const parsed = JSON.parse(data);
 
-  // Store as an object (use the variables you actually defined)
-  const myData = { fs: fs, fc: fc, bitRate: bitRate, messageSignal: messageSignal };
-
-  localStorage.setItem('sharedData', JSON.stringify(myData));
+    // Update input fields in current tab
+    document.getElementById('sampling_frequency').value = parsed.fs ?? '';
+    document.getElementById('carrier_frequency').value = parsed.fc ?? '';
+    document.getElementById('bit_rate').value = parsed.bitRate ?? '';
+	
+	messageSignal = parsed.messageSignal ?? null;
+  }
 }
+
+// Load immediately
+loadData();
+
+// Update if storage changes (works across tabs)
+window.addEventListener('storage', loadData);
   </script>
   
   <style>
-  
-    #demodulation {
+  #modulation {
   display: none;
   }
-  
   .container {
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
