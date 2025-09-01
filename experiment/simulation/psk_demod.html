@@ -8,17 +8,14 @@
   </head>
   <body>
     <!-- sidebar and body -->
+	<div id = "modulation">
 	<div id = "container">
     <h1>Instructions for Binary Phase Shift Keying Modulation (both Baseband and Passband)</h1>
-	    <ul>
-      <li class="step step4"><strong>Note:</strong> Use the input fields to enter the carrier frequency, sampling frequency, number of bits, and the bit rate.</li>
-    
-      <li class="step step1"><strong>Step 1:</strong> Click the <em>"Generate Message"</em> button to generate the input message signal.</li>
-    
-      <li class="step step2"><strong>Step 2:</strong> Click the <em>"Generate Carrier"</em> button to generate the carrier signal.</li>
-    
-      <li class="step step3"><strong>Step 3:</strong> Click the <em>"Simulate PSK"</em> button to generate both baseband and passband PSK signal.</li>
-    
+    <ul>
+        <li class="step step1">Step 1: Click on 'Generate Message' button to generate input message signal</li>
+        <li class="step step2">Step 2: Then click on 'Generate Carrier' button to generate carrier signal</li>
+		<li class="step step3">Step 3: You can change the carrier signal frequency from the input fields</li>
+        <li class="step step4">Step 4: Click on 'Simulate PSK' button to generate Phase Shift Keying Signal</li>
     </ul>
 <br/>
     <div class="flex min-h-[80vh]">
@@ -151,15 +148,15 @@
       </div>
     </div>
 	
-	<div id = "demodulation">
 	<br/><br/><hr/>
+	</div></div>
 	    <!-- sidebar and body -->
 			  <div id = "container">
     <h1>Instructions for Biary Phase Shift Keying (BPSK) Demodulation</h1>
     <ul>
 		<li class="step step1">Step 1: You can Demodulate the FSK Signal clicking on the 'Demodulate PSK' button</li>
 		<li class="step step2">Step 2: Click on the 'Generate BER vs SNR' button to plot BER vs SNR graph</li>
-		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram for the same</li>
+		<li class="step step3">Step 3: Click on the 'Generate Constellation' button to see the constellation diagram of binary PSK</li>
     </ul>
 </div>
     <div class="flex min-h-[80vh]">
@@ -224,7 +221,7 @@
       </div>
     </div>
 	
-	</div>
+	
  
      <script>
         function checkFrequencies() {
@@ -262,8 +259,6 @@
         let phase_shift_value = 0;
 
         function generateMessageSignal() {
-		    const bitRate = parseInt(document.getElementById("bit_rate").value);
-    const bitDuration = 1 / bitRate;
             num_bits = parseInt(document.getElementById("num_bits").value);
 
             // Generate random bits
@@ -280,20 +275,11 @@
                 mode: "lines",
                 name: "Binary Information at Transmitter",
             }];
-			
-				      const annotations = bits.map((bit, index) => ({
-        x: (index + 0.5) * bitDuration, // Center the annotation in the bit interval
-        y: 1.1, // Position the text above the line
-        text: bit.toString(),
-        showarrow: false,
-        font: { color: "black" },
-      }));
 
             const originalLayout = {
                 title: "Binary Information at Transmitter",
                 xaxis: { title: "Time (s)" },
                 yaxis: { title: "Bit Value" },
-				annotations: annotations,
             };
 
             Plotly.newPlot("original", originalData, originalLayout);
@@ -374,16 +360,18 @@ bitsf = bits.map(bit => bit === 0 ? -1 : 1);
             };
 
             Plotly.newPlot("modulated-plot", modulatedData, modulatedLayout);
-			saveData();
         }
 
        function demodulateSignal() {
+	   	   generateCarrierSignal();
+	   generatePSKModulatedSignal();
     // Ensure the modulated signal has been generated
     if (modulated_signal.length === 0) {
         alert("Please generate the modulated signal first.");
         return;
     }
-
+    const bitRate = parseInt(document.getElementById("bit_rate").value);
+    const bitDuration = 1 / bitRate;
     const demodulated_signal = [];
     const t = Array.from({ length: Math.floor(Fs) }, (_, i) => i / Fs);
 
@@ -412,10 +400,20 @@ bitsf = bits.map(bit => bit === 0 ? -1 : 1);
         mode: "lines",
         name: "Demodulated Signal",
     }];
+	
+	      const annotations = demodulated_signal.map((bit, index) => ({
+        x: (index + 0.5) * bitDuration, // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
+	  
     const demodulatedLayout = {
         title: "Demodulated Bits",
         xaxis: { title: "Time (s)" },
         yaxis: { title: "Bit Value" },
+		annotations: annotations,
     };
 
     Plotly.newPlot("demodulated-plot", demodulatedData, demodulatedLayout);
@@ -481,22 +479,31 @@ function representDigitalSignal(bitsx) {
 }
 
 	
-		function saveData() {
-  const Fs = parseFloat(document.getElementById('sampling_frequency').value);
-  const fc = parseFloat(document.getElementById('carrier_frequency').value);
-  const num_bits = parseFloat(document.getElementById('num_bits').value);
- const bit_rate = parseFloat(document.getElementById('bit_rate').value);
+		function loadData() {
+  const data = localStorage.getItem('sharedData');
+  if (data) {
+    const parsed = JSON.parse(data);
 
-  // Store as an object (use the variables you actually defined)
-  const myData = { Fs: Fs, fc: fc, num_bits: num_bits, bit_rate: bit_rate, bits: bits };
-
-  localStorage.setItem('sharedData', JSON.stringify(myData));
+    // Update input fields in current tab
+    document.getElementById('sampling_frequency').value = parsed.Fs ?? '';
+    document.getElementById('carrier_frequency').value = parsed.fc ?? '';
+    document.getElementById('num_bits').value = parsed.num_bits ?? '';
+    document.getElementById('bit_rate').value = parsed.bit_rate ?? '';
+	
+	bits = parsed.bits ?? null; 
+  }
 }
+
+// Load immediately
+loadData();
+
+// Update if storage changes (works across tabs)
+window.addEventListener('storage', loadData);
     </script>
 	
 	
 	<style>
-	#demodulation {
+	#modulation {
 	display: none;
 	}
 	#phase_shift {
