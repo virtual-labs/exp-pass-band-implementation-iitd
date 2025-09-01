@@ -20,17 +20,17 @@ same when we transmit binary "0". Each modulation scheme has its advantages and 
 
 <ol class="mb-4 pl-4 list-decimal text-[#007bff] font-normal text-[19.2px]" style="font-family: Raleway, sans-serif">
   <li>
-    <a href="./theory/ASK.html" class="hover:text-[#3e6389] hover:underline">
+    <a href="./ASK.html" class="hover:text-[#3e6389] hover:underline">
       <p>Passband Amplitude Shift Keying (ASK)</p>
     </a>
   </li>
   <li>
-    <a href="./theory/FSK.html" class="hover:text-[#3e6389] hover:underline">
+    <a href="./FSK.html" class="hover:text-[#3e6389] hover:underline">
       <p>Passband Frequency Shift Keying (FSK)</p>
     </a>
   </li>
   <li>
-    <a href="./theory/PSK.html" class="hover:text-[#3e6389] hover:underline">
+    <a href="./PSK.html" class="hover:text-[#3e6389] hover:underline">
       <p>Passband Phase Shift Keying (PSK)</p>
     </a>
   </li>
