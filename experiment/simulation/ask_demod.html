@@ -182,6 +182,12 @@
                 <button class="bg-blue-500 text-white rounded-md px-2 py-1" onclick="demodulateASK()">Demodulate ASK</button>
 				
               </div>
+              <button
+              onclick="ASKInput();"
+              class="bg-blue-500 text-white py-1 px-3 mt-1 rounded-md hover:bg-[#0c9c0c] hover:scale-105"
+            >
+              ASK Input
+            </button>
               <img src=".././images/simulation/askimg2.png" alt="ask1" class="w-[100%] h-[100%]" />
             </div>
           </div>
@@ -189,6 +195,10 @@
             <div id="modulated-plot" class="w-[100%]"></div>
             <div id="carrier-plot" class="w-[100%]"></div>
             <div id="plot" class="w-[100%]"></div>
+            <div id="SSBSCInput1" class="flex gap-4 w-[100%]">
+              <div id="ASKInput" class="w-[60%]"></div>
+              <div id="frequencySpectrum1" class="w-[40%]"></div>
+            </div>
             <div id="demodulated-plot" class="w-[100%]"></div>
           </div>
         </div>
@@ -501,6 +511,124 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     }
 	
 	
+    let Tb;
+ 
+    function sinc(x) {
+      return x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+    }
+
+    function generateSpectrum(centerFreqs, label, color) {
+      const f = Array.from({ length: 1000 }, (_, i) => -150 + i * 0.3);
+      const y = f.map(freq => {
+        return centerFreqs.reduce((acc, fc) => acc + Math.abs(sinc((freq - fc) * Tb)), 0);
+      });
+      return {
+        x: f,
+        y: y,
+        name: label,
+        line: { color },
+        mode: 'lines'
+      };
+    }
+
+    function generateSpectrumASK() {
+    Tb = 1/parseInt(document.getElementById("bit_rate").value);//1/bitRate;
+    console.log(Tb);
+    let A = 1;
+    fc = parseInt(document.getElementById("carrier_frequency").value);;
+    let deltaF = 5;
+    const askSpec = generateSpectrum([fc, -fc], 'ASK Spectrum', 'red');
+    const fskSpec = generateSpectrum([fc + deltaF, fc - deltaF, -(fc + deltaF), -(fc - deltaF)], 'FSK Spectrum', 'blue');
+    const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
+
+    Plotly.newPlot('frequencySpectrum1', [askSpec], {
+      title: 'Spectra of ASK',
+      xaxis: { title: 'Frequency (Hz)' },
+      yaxis: { title: 'Amplitude', rangemode: 'tozero' }
+    });
+    document.getElementById('frequencySpectrum1').scrollIntoView({ behavior: 'smooth' });
+  }
+
+    function ASKInput() {
+  // Get user input values
+  const fs = parseInt(document.getElementById("sampling_frequency").value);
+  const fc = parseFloat(document.getElementById("carrier_frequency").value);
+  const bitRate = parseFloat(document.getElementById("bit_rate").value); // Assuming bitRate is defined
+  
+  const bp = 1 / bitRate; // Bit period
+
+  // Assuming messageSignal is already defined and contains binary values (0 or 1)
+  console.log("Binary information at Transmitter:");
+  console.log(messageSignal);
+
+  // 1. Generate bit arrays for each bit in the message signal
+  const bit = [];
+  for (let n = 0; n < messageSignal.length; n++) {
+    if (messageSignal[n] === 1) {
+      bit.push(Array(fs).fill(1)); // For '1' we use a carrier at full amplitude
+    } else {
+      bit.push(Array(fs).fill(0)); // For '0' we use a carrier with amplitude 0
+    }
+  }
+
+  // 2. Generate time arrays for the entire signal
+  const t1 = [];
+  for (let i = 0; i < fs * messageSignal.length; i++) {
+    t1.push((i*bp) / fs);  // Time array for the total number of samples
+  }
+
+  // 3. Generate ASK modulated signal
+  const A1 = 1; // Amplitude for information '1'
+  const A2 = 0;  // Amplitude for information '0'
+  
+  // 4. Modulate the signal
+  const m = [];
+  for (let i = 0; i < messageSignal.length; i++) {
+    const t = Array.from({ length: fs }, (_, k) => k / fs); // Time array for each bit period
+    const y = messageSignal[i] === 1
+      ? t.map(t2 => A1 * Math.cos(2 * Math.PI * fc * t2)) // Modulate with A1 for bit '1'
+      : t.map(t2 => A2 * Math.cos(2 * Math.PI * fc * t2)); // Modulate with A2 for bit '0'
+    m.push(y);
+  }
+
+  // Flatten the modulated signal
+  const modulatedSignal = m.flat();
+
+  // 5. Prepare plot data
+  const modulatedData = [
+    {
+      x: t1, // Time array for the entire signal
+      y: modulatedSignal, // Flattened modulated signal
+      type: "scatter",
+      mode: "lines",
+      name: "ASK Modulated Signal",
+      line: { color: "blue" },
+    }
+  ];
+
+  // 6. Plot the modulated signal
+  Plotly.newPlot("ASKInput", modulatedData, {
+    title: "ASK Modulated Signal",
+    xaxis: { title: "Time (s)" },
+    yaxis: { title: "Amplitude" },
+    showlegend: true
+  });
+  generateSpectrumASK();
+}
+
+
+
+
+// Utility: linspace
+function linspace(start, stop, num) {
+    const arr = [];
+    const step = (stop - start) / (num - 1);
+    for (let i = 0; i < num; i++) {
+        arr.push(start + step * i);
+    }
+    return arr;
+}
+
 	  function loadData() {
   const data = localStorage.getItem('sharedData');
   if (data) {
