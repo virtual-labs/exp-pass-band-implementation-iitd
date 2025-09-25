@@ -69,7 +69,7 @@
                   class="border px-1 w-36 border-black py-1 rounded-sm"
                   type="number"
                   id="num_bits"
-                  value="100"
+                  value="20"
                 />
               </div>
             </div>
@@ -86,6 +86,16 @@
                   id="bit_rate"
                   value="10"
                 />
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-1">
+                <button 
+                class="bg-green-500 text-white rounded-md px-3 py-1 hover:scale-105"
+                onclick="location.reload();"
+              >
+                Reset Simulator
+              </button>
               </div>
             </div>
           </div>
@@ -123,6 +133,25 @@
                   Simulate ASK
                 </button>
               </div>
+              <div class="absolute top-[300px] left-[177px]">
+                <button
+                  class="bg-gray-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="generateSpectrumASK()"
+                >
+                  Show Frequency Spectrums
+                </button>
+              </div>
+              <div class="absolute top-[340px] left-[177px]">
+                <a href="../constellation/ask_constellation.html">
+                <button
+                  class="bg-gray-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                >
+                  Plot Constellation Diagram
+                </button>
+                </a>
+              </div>
               <img
                 src=".././images/simulation/askimg1.png"
                 alt="ask1"
@@ -133,8 +162,10 @@
           <div class="flex w-[48%] flex-col justify-center items-center">
             <div id="modulated-plot" class="w-[100%]"></div>
 			<div id="baskSignal" class="w-[100%]"></div>
+      <div id="superimposed" class="w-[100%]"></div>
             <div id="carrier-plot" class="w-[100%]"></div>
             <div id="plot" class="w-[100%]"></div>
+            <div id="frequencySpectrum" class="w-[100%]"></div>
           </div>
         </div>
       </div>
@@ -195,7 +226,18 @@
     </div>
   </div>
 	
+
 	</div>
+
+  <div align = "center">
+    <a href = ".\ask_demod.html">
+    <button
+    class="bg-blue-500 text-white py-1 px-3  rounded-md hover:scale-105"
+  >
+    Perform ASK Demodulation
+  </button>
+  </a>
+  </div>
 	     <script>
         function checkFrequencies() {
             // Get values from input fields
@@ -306,6 +348,7 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     }
     function simulateASK() {
 	plotBASKSignal();
+  superimposed();
       if (!messageSignal) {
         console.error("Message signal is not generated yet.");
         return;
@@ -498,6 +541,112 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
       return { bitx, tx }; // Return the digital signal and corresponding time instances
     }
 	
+
+//const fs = 1000;
+let Tb;
+   let fc;
+    function sinc(x) {
+      return x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+    }
+
+    function generateSpectrum(centerFreqs, label, color) {
+      const f = Array.from({ length: 1000 }, (_, i) => -150 + i * 0.3);
+      const y = f.map(freq => {
+        return centerFreqs.reduce((acc, fc) => acc + Math.abs(sinc((freq - fc) * Tb)), 0);
+      });
+      return {
+        x: f,
+        y: y,
+        name: label,
+        line: { color },
+        mode: 'lines'
+      };
+    }
+
+    function generateSpectrumASK() {
+    Tb = 1/parseInt(document.getElementById("bit_rate").value);//1/bitRate;
+    console.log(Tb);
+    let A = 1;
+    fc = parseInt(document.getElementById("carrier_frequency").value);;
+    let deltaF = 5;
+    const askSpec = generateSpectrum([fc, -fc], 'ASK Spectrum', 'red');
+    const fskSpec = generateSpectrum([fc + deltaF, fc - deltaF, -(fc + deltaF), -(fc - deltaF)], 'FSK Spectrum', 'blue');
+    const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
+
+    Plotly.newPlot('frequencySpectrum', [askSpec], {
+      title: 'Spectra of ASK',
+      xaxis: { title: 'Frequency (Hz)' },
+      yaxis: { title: 'Amplitude', rangemode: 'tozero' }
+    });
+    document.getElementById('frequencySpectrum').scrollIntoView({ behavior: 'smooth' });
+  }
+  
+  
+function superimposed() {
+  // Get user input values
+  const num_bits = parseInt(document.getElementById("num_bits").value);
+  const fs = parseInt(document.getElementById("sampling_frequency").value);
+  const bitRate = parseInt(document.getElementById("bit_rate").value);
+  const fc = parseInt(document.getElementById("carrier_frequency").value);
+
+  const bp = 1 / bitRate; // Bit period
+  const totalSamples = fs * messageSignal.length;
+
+  // 1. Generate random binary message bits (0 or 1)
+  const messageBits = [];
+  for (let i = 0; i < num_bits; i++) {
+    messageBits.push(Math.round(Math.random()));
+  }
+
+  // 2. Expand message bits to sampled waveform
+  const messageSamples = [];
+  messageSignal.forEach(bit => {
+    for (let i = 0; i < fs; i++) {
+      messageSamples.push(bit);
+    }
+  });
+
+  // 3. Generate carrier signal
+  const t = [];
+  const carrierSamples = [];
+  for (let i = 0; i < totalSamples; i++) {
+    const time = (i*bp) / fs;
+    t.push(time);
+    carrierSamples.push(Math.cos(2 * Math.PI * fc * time)); // Amplitude = 10
+  }
+
+  // 4. Prepare plot data (both signals separately, on same time axis)
+  const data = [
+    {
+      x: t,
+      y: messageSamples,
+      type: "scatter",
+      mode: "lines",
+      name: "Message Signal",
+      line: { color: "red" }
+    },
+    {
+      x: t,
+      y: carrierSamples,
+      type: "scatter",
+      mode: "lines",
+      name: "Carrier Signal",
+      line: { color: "green" }
+    }
+  ];
+
+  const layout = {
+    title: "Superposition of Message and Carrier Signals",
+    xaxis: { title: "Time (s)" },
+    yaxis: { title: "Amplitude" },
+    showlegend: true
+  };
+
+  // 5. Plot both signals in the same plot
+  Plotly.newPlot("superimposed", data, layout);
+}
+
+
 	  function saveData() {
   const fs = parseFloat(document.getElementById('sampling_frequency').value);
   const fc = parseFloat(document.getElementById('carrier_frequency').value);
