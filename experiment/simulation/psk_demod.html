@@ -204,6 +204,12 @@
             <div class="flex gap-1">
               <div class="flex-1 flex flex-col items-center">
                 <div class="w-full">
+                  <button
+                  onclick="PSKInput();"
+                  class="bg-blue-500 text-white py-1 px-3 mt-1 rounded-md hover:bg-[#0c9c0c] hover:scale-105"
+                >
+                  PSK Input
+                </button>
                   <img
                     class="w-[100%] h-[100%]"
                     src=".././images/simulation/psk_demod2.png"
@@ -212,6 +218,12 @@
                 </div>
               </div>
               <div class="flex flex-1 flex-col justify-center items-center">
+                <div id="SSBSCInput1" class="flex gap-4">
+                  <!-- Time-domain plot -->
+                  <div id="PSKInput" class="w-[50%]"></div>
+                  <!-- Frequency-domain plot -->
+                  <div id="frequencySpectrum1" class="w-[50%]"></div>
+                </div>
                 <div class="max-h-[400px]" id="demodulated-plot"></div>
               </div>
             </div>
@@ -478,6 +490,87 @@ function representDigitalSignal(bitsx) {
     return { bitx, tx };
 }
 
+let Tb;
+   //let fc;
+    function sinc(x) {
+      return x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+    }
+
+    function generateSpectrum(centerFreqs, label, color) {
+      const f = Array.from({ length: 1000 }, (_, i) => -150 + i * 0.3);
+      const y = f.map(freq => {
+        return centerFreqs.reduce((acc, fc) => acc + Math.abs(sinc((freq - fc) * Tb)), 0);
+      });
+      return {
+        x: f,
+        y: y,
+        name: label,
+        line: { color },
+        mode: 'lines'
+      };
+    }
+
+    function generateSpectrumPSK() {
+    Tb = 1/parseInt(document.getElementById("bit_rate").value);//1/bitRate;
+    console.log(Tb);
+    let A = 1;
+    fc = parseInt(document.getElementById("carrier_frequency").value);;
+    let deltaF = 5;
+    const askSpec = generateSpectrum([fc, -fc], 'ASK Spectrum', 'red');
+    const fskSpec = generateSpectrum([fc + deltaF, fc - deltaF, -(fc + deltaF), -(fc - deltaF)], 'FSK Spectrum', 'blue');
+    const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
+
+    Plotly.newPlot('frequencySpectrum1', [pskSpec], {
+      title: 'Spectra of PSK',
+      xaxis: { title: 'Frequency (Hz)' },
+      yaxis: { title: 'Amplitude', rangemode: 'tozero' }
+    });
+    document.getElementById('frequencySpectrum1').scrollIntoView({ behavior: 'smooth' });
+  }
+	
+
+  function PSKInput() {
+
+        Fs = parseInt(document.getElementById("sampling_frequency").value);
+            fc = parseInt(document.getElementById("carrier_frequency").value);
+			bit_rate = parseInt(document.getElementById("bit_rate").value);
+            num_bits = parseInt(document.getElementById("num_bits").value);
+            phase_shift_value = parseFloat(document.getElementById("phase_shift").value);
+
+            if (!bits) {
+            alert("Please perform PM modulation first!");
+			window.location.reload(true); 
+            return;
+        }
+            // PSK modulation
+            const t = Array.from({ length: Math.floor(Fs) }, (_, i) => i / Fs);
+            modulated_signal = [];
+            const phase_shift = Math.PI * phase_shift_value;
+
+            for (const bit of bits) {
+                const phase = bit === 0 ? 0 : phase_shift;
+                const signal = t.map((time) => Math.sin(2 * Math.PI * fc * time + phase));
+                modulated_signal = modulated_signal.concat(signal);
+            }
+
+            // Plot modulated signal
+            const modulatedData = [{
+                x: Array.from({ length: modulated_signal.length }, (_, i) => (i / Fs)/bit_rate),
+                y: modulated_signal,
+                type: "scatter",
+                mode: "lines",
+                name: "Modulated Signal",
+            }];
+
+            const modulatedLayout = {
+                title: "PSK Modulated Signal",
+                xaxis: { title: "Time (s)" },
+                yaxis: { title: "Amplitude" },
+            };
+
+            Plotly.newPlot("PSKInput", modulatedData, modulatedLayout);
+  generateSpectrumPSK();
+}
 	
 		function loadData() {
   const data = localStorage.getItem('sharedData');
