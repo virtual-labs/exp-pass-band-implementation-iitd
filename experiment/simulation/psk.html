@@ -336,27 +336,42 @@
         }
 
         function generateCarrierSignal() {
-            Fs = parseInt(document.getElementById("sampling_frequency").value);
-            fc = parseInt(document.getElementById("carrier_frequency").value);
-            const t = Array.from({ length: 1 * Fs }, (_, i) => i / Fs);
-            const carrier_signal = t.map((time) => Math.sin(2 * Math.PI * fc * time));
+    const Fs = parseInt(document.getElementById("sampling_frequency").value); // Sampling frequency
+    const fc = parseInt(document.getElementById("carrier_frequency").value); // Carrier frequency
+    const num_bits = parseInt(document.getElementById("num_bits").value); // Number of bits in message signal
+    const bitRate = parseInt(document.getElementById("bit_rate").value); // Bit rate of message signal
 
-            const carrierData = [{
-                x: t,
-                y: carrier_signal,
-                type: "scatter",
-                mode: "lines",
-                name: "Carrier Signal",
-            }];
+    // Message signal duration (in seconds)
+    const messageSignalDuration = num_bits / bitRate;
 
-            const carrierLayout = {
-                title: "Carrier Signal",
-                xaxis: { title: "Time (s)" },
-                yaxis: { title: "Amplitude" },
-            };
+    // Total number of samples
+    const numSamples = Math.round(Fs * messageSignalDuration); // Round to the nearest integer
 
-            Plotly.newPlot("carrier-plot", carrierData, carrierLayout);
-        }
+    // Generate the time array (t) with the correct number of samples
+    const t = Array.from({ length: numSamples }, (_, i) => i / Fs);
+
+    // Generate the carrier signal (cosine wave, can also use sine)
+    const carrier_signal = t.map(time => Math.sin(2 * Math.PI * fc * time)); // Use cosine if preferred
+
+    // Plotting data for the carrier signal
+    const carrierData = [{
+        x: t,
+        y: carrier_signal,
+        type: "scatter",
+        mode: "lines",
+        name: "Carrier Signal",
+    }];
+
+    // Layout for the plot
+    const carrierLayout = {
+        title: "Carrier Signal",
+        xaxis: { title: "Time (s)" },
+        yaxis: { title: "Amplitude" },
+    };
+
+    // Render the plot using Plotly
+    Plotly.newPlot("carrier-plot", carrierData, carrierLayout);
+}
 
         function plotBPSKSignal() {
 		bit_rate = parseInt(document.getElementById("bit_rate").value);
@@ -549,7 +564,7 @@ let Tb;
     const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
 
     Plotly.newPlot('frequencySpectrum', [pskSpec], {
-      title: 'Spectra of PSK',
+      title: 'Spectra of Passband PSK',
       xaxis: { title: 'Frequency (Hz)' },
       yaxis: { title: 'Amplitude', rangemode: 'tozero' }
     });
