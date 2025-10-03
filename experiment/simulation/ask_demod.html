@@ -542,19 +542,18 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
 
     Plotly.newPlot('frequencySpectrum1', [askSpec], {
-      title: 'Spectra of ASK',
+      title: 'Spectra of Passband ASK',
       xaxis: { title: 'Frequency (Hz)' },
       yaxis: { title: 'Amplitude', rangemode: 'tozero' }
     });
     document.getElementById('frequencySpectrum1').scrollIntoView({ behavior: 'smooth' });
   }
 
-    function ASKInput() {
+  function ASKInput() {
   // Get user input values
   const fs = parseInt(document.getElementById("sampling_frequency").value);
   const fc = parseFloat(document.getElementById("carrier_frequency").value);
   const bitRate = parseFloat(document.getElementById("bit_rate").value); // Assuming bitRate is defined
-  
   const bp = 1 / bitRate; // Bit period
 
   // Assuming messageSignal is already defined and contains binary values (0 or 1)
@@ -572,15 +571,20 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
   }
 
   // 2. Generate time arrays for the entire signal
+  const totalSamples = fs * messageSignal.length;
   const t1 = [];
-  for (let i = 0; i < fs * messageSignal.length; i++) {
-    t1.push((i*bp) / fs);  // Time array for the total number of samples
+  const t1pp = [];
+  
+  for (let i = 0; i < totalSamples; i++) {
+    const time = (i * bp) / fs;
+    t1.push(time);
+    t1pp.push(time);  // Ensure both time arrays are the same
   }
 
   // 3. Generate ASK modulated signal
   const A1 = 1; // Amplitude for information '1'
   const A2 = 0;  // Amplitude for information '0'
-  
+
   // 4. Modulate the signal
   const m = [];
   for (let i = 0; i < messageSignal.length; i++) {
@@ -594,25 +598,37 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
   // Flatten the modulated signal
   const modulatedSignal = m.flat();
 
-  // 5. Prepare plot data
-  const modulatedData = [
+  // 5. Scale the message signal
+  const scaledMessageSignal = bit.flat().map(val => A1 * val);
+
+  // 6. Plot the modulated signal and the original message signal together
+  const data = [
     {
-      x: t1, // Time array for the entire signal
-      y: modulatedSignal, // Flattened modulated signal
+      x: t1pp, // Time array for the entire signal
+      y: scaledMessageSignal, // Scaled binary message signal
+      type: "scatter",
+      mode: "lines",
+      name: "Original Message Signal",
+      line: { color: "red" }
+    },
+    {
+      x: t1,  // Time array for the modulated signal
+      y: modulatedSignal,  // Modulated signal
       type: "scatter",
       mode: "lines",
       name: "ASK Modulated Signal",
-      line: { color: "blue" },
+      line: { color: "blue" }
     }
   ];
 
-  // 6. Plot the modulated signal
-  Plotly.newPlot("ASKInput", modulatedData, {
-    title: "ASK Modulated Signal",
+  // 7. Plot the data
+  Plotly.newPlot("ASKInput", data, {
+    title: "Superimposition of Message Signal and ASK Modulated Signal",
     xaxis: { title: "Time (s)" },
     yaxis: { title: "Amplitude" },
     showlegend: true
   });
+
   generateSpectrumASK();
 }
 

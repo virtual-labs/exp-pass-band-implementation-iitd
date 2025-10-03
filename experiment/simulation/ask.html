@@ -407,45 +407,50 @@ bitsf = messageSignal.map(bit => bit === 0 ? 0 : 1);
     }
 
     let isCarrierGenerated = false; // Track if carrier is generated
-    function generateCarrierSignal() {
-      if (isCarrierGenerated) {
-        console.warn("Carrier signal already generated.");
-        return;
-      }
 
-      const fc = parseInt(document.getElementById("carrier_frequency").value);
-      const fs = parseInt(document.getElementById("sampling_frequency").value);
+function generateCarrierSignal() {
 
-      const carrierAmplitude = 10; // Amplitude of the carrier signal
-      const t = [];
-      const carrier = [];
 
-      // Calculate number of samples for 1 second duration
-      const numSamples = Math.floor(fs);
+  const fc = parseInt(document.getElementById("carrier_frequency").value); // Carrier frequency
+  const fs = parseInt(document.getElementById("sampling_frequency").value); // Sampling frequency
+  const num_bits = parseInt(document.getElementById("num_bits").value); // Number of bits in message signal
+  const bitRate = parseInt(document.getElementById("bit_rate").value); // Bit rate of message signal
 
-      for (let i = 0; i < numSamples; i++) {
-        const time = i / fs; // Correct time period for each sample
-        t.push(time);
-        carrier.push(carrierAmplitude * Math.cos(2 * Math.PI * fc * time));
-      }
+  // Message signal duration (in seconds)
+  const messageSignalDuration = num_bits / bitRate;
 
-      const carrierData = [
-        {
-          x: t,
-          y: carrier,
-          type: "scatter",
-          mode: "lines",
-          name: "Carrier Signal",
-          line: { color: "green" },
-        },
-      ];
+  const carrierAmplitude = 1; // Amplitude of the carrier signal
+  const t = []; // Time array for plotting
+  const carrier = []; // Carrier signal array
 
-      Plotly.newPlot("carrier-plot", carrierData, {
-        title: "Carrier Signal (1 Second Duration)",
-      });
+  // Calculate the number of samples based on message signal duration
+  const numSamples = fs * messageSignalDuration;
 
-      isCarrierGenerated = true; // Set flag to true
-    }
+  // Generate the carrier signal samples
+  for (let i = 0; i < numSamples; i++) {
+    const time = i / fs; // Time for each sample (in seconds)
+    t.push(time);
+    carrier.push(carrierAmplitude * Math.cos(2 * Math.PI * fc * time)); // Carrier signal equation
+  }
+
+  // Plot the carrier signal using Plotly
+  const carrierData = [
+    {
+      x: t,
+      y: carrier,
+      type: "scatter",
+      mode: "lines",
+      name: "Carrier Signal",
+      line: { color: "green" },
+    },
+  ];
+
+  Plotly.newPlot("carrier-plot", carrierData, {
+    title: "Carrier Signal",
+  });
+
+  isCarrierGenerated = true; // Set flag to true after carrier is generated
+}
 	
 	function demodulateASK() {
       if (!messageSignal) {
@@ -574,7 +579,7 @@ let Tb;
     const pskSpec = generateSpectrum([fc, -fc], 'PSK Spectrum', 'green');
 
     Plotly.newPlot('frequencySpectrum', [askSpec], {
-      title: 'Spectra of ASK',
+      title: 'Spectra of Passband ASK',
       xaxis: { title: 'Frequency (Hz)' },
       yaxis: { title: 'Amplitude', rangemode: 'tozero' }
     });
