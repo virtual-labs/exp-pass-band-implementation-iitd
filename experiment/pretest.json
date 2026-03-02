@@ -10,13 +10,13 @@
         "d": "Non-coherent demodulation"
       },
       "explanations": {
-        "a": "Phase distortion affects PSK more than ASK.",
-        "b": "ASK performance degrades rapidly at low SNR because amplitude is directly affected by noise.",
-        "c": "ASK can be bandwidth efficient with proper filtering.",
-        "d": "ASK can use coherent or non-coherent detection, but noise is a larger issue."
+        "a": "Incorrect! Phase distortion affects PSK more than ASK.",
+        "b": "Correct! ASK performance degrades rapidly at low SNR because amplitude is directly affected by noise.",
+        "c": "Incorrect! ASK can be bandwidth efficient with proper filtering.",
+        "d": "Incorrect! ASK can use coherent or non-coherent detection, but noise is a larger issue."
       },
       "correctAnswer": "b",
-      "difficulty": "advanced"
+      "difficulty": "intermediate"
     },
     {
       "question": "2. In coherent passband FSK systems, how is intersymbol interference (ISI) minimized?",
@@ -27,13 +27,13 @@
         "d": "By differential encoding"
       },
       "explanations": {
-        "a": "Increasing deviation doesn’t inherently remove ISI.",
-        "b": "Orthogonal frequencies ensure minimal overlap and eliminate ISI.",
-        "c": "Filtering is more applicable in linear modulations like PSK.",
-        "d": "Differential encoding addresses phase ambiguity, not ISI."
+        "a": "Incorrect! Increasing deviation doesn’t inherently remove ISI.",
+        "b": "Correct! Orthogonal frequencies ensure minimal overlap and eliminate ISI.",
+        "c": "Incorrect! Filtering is more applicable in linear modulations like PSK.",
+        "d": "Incorrect! Differential encoding addresses phase ambiguity, not ISI."
       },
       "correctAnswer": "b",
-      "difficulty": "advanced"
+      "difficulty": "intermediate"
     },
     {
       "question": "3. Compared to passband PSK, passband FSK is generally more robust in which type of communication channel?",
@@ -44,13 +44,13 @@
         "d": "Flat-fading channels with strong phase jitter"
       },
       "explanations": {
-        "a": "PSK may perform better in pure AWGN with coherent detection.",
-        "b": "FSK handles frequency selectivity better due to its spectral spread.",
-        "c": "FSK can be more immune to narrowband impulsive noise.",
-        "d": "FSK is superior under phase jitter because it doesn’t depend on phase."
+        "a": "Incorrect! PSK may perform better in pure AWGN with coherent detection.",
+        "b": "Incorrect! FSK handles frequency selectivity better due to its spectral spread.",
+        "c": "Incorrect! FSK can be more immune to narrowband impulsive noise.",
+        "d": "Correct! FSK is superior under phase jitter because it doesn’t depend on phase."
       },
       "correctAnswer": "d",
-      "difficulty": "advanced"
+      "difficulty": "intermediate"
     },
     {
       "question": "4. Why is coherent detection preferred over non-coherent detection in passband PSK systems?",
@@ -61,13 +61,13 @@
         "d": "It makes the system more robust to frequency offset."
       },
       "explanations": {
-        "a": "Coherent detection is more complex, not simpler.",
-        "b": "Recovering phase allows optimal decision boundaries and lower BER.",
-        "c": "Bandwidth is unaffected by coherent vs non-coherent detection.",
-        "d": "Frequency offset tolerance is not the strength of coherent PSK."
+        "a": "Incorrect! Coherent detection is more complex, not simpler.",
+        "b": "Correct! Recovering phase allows optimal decision boundaries and lower BER.",
+        "c": "Incorrect! Bandwidth is unaffected by coherent vs non-coherent detection.",
+        "d": "Incorrect! Frequency offset tolerance is not the strength of coherent PSK."
       },
       "correctAnswer": "b",
-      "difficulty": "advanced"
+      "difficulty": "intermediate"
     },
     {
       "question": "5. What limits the minimum frequency separation in passband binary FSK for orthogonality?",
@@ -78,13 +78,13 @@
         "d": "Signal power"
       },
       "explanations": {
-        "a": "Carrier phase does not affect frequency orthogonality.",
-        "b": "Modulation index affects tone spacing, but the base constraint is symbol time.",
-        "c": "Orthogonality in FSK is achieved when frequency separation = 1 / symbol duration.",
-        "d": "Power doesn't impact orthogonality directly."
+        "a": "Incorrect! Carrier phase does not affect frequency orthogonality.",
+        "b": "Incorrect! Modulation index affects tone spacing, but the base constraint is symbol time.",
+        "c": "Correct! Orthogonality in FSK is achieved when frequency separation = 1 / symbol duration.",
+        "d": "Incorrect! Power doesn't impact orthogonality directly."
       },
       "correctAnswer": "c",
-      "difficulty": "advanced"
+      "difficulty": "intermediate"
     },
     {
       "question": "6. In passband ASK systems, what is the main reason it is rarely used in power-constrained wireless applications?",
@@ -95,10 +95,10 @@
         "d": "It is highly susceptible to amplitude variations from fading."
       },
       "explanations": {
-        "a": "ASK can be narrowband.",
-        "b": "Spectral efficiency can be decent depending on shaping.",
-        "c": "ASK usually has lower PAPR than multilevel modulations.",
-        "d": "Correct: fading affects amplitude severely, degrading ASK signals."
+        "a": "Incorrect! ASK can be narrowband.",
+        "b": "Incorrect! Spectral efficiency can be decent depending on shaping.",
+        "c": "Incorrect! ASK usually has lower PAPR than multilevel modulations.",
+        "d": "Correct! Fading affects amplitude severely, degrading ASK signals."
       },
       "correctAnswer": "d",
       "difficulty": "advanced"
@@ -112,10 +112,10 @@
         "d": "exp(−Eb/N0)"
       },
       "explanations": {
-        "a": "Correct expression for BER in coherent BPSK over AWGN.",
-        "b": "This is the expression for some non-coherent schemes.",
-        "c": "This is equivalent to option a, but not in standard Q-function form.",
-        "d": "This is an approximation, not exact BER."
+        "a": "Correct! Correct expression for BER in coherent BPSK over AWGN.",
+        "b": "Incorrect! This is the expression for some non-coherent schemes.",
+        "c": "Incorrect! This is equivalent to option a, but not in standard Q-function form.",
+        "d": "Incorrect! This is an approximation, not exact BER."
       },
       "correctAnswer": "a",
       "difficulty": "advanced"
@@ -129,10 +129,10 @@
         "d": "Improves diversity performance"
       },
       "explanations": {
-        "a": "Timing offset is less influenced by Doppler.",
-        "b": "Doppler causes frequency spreading and phase shifts, not just amplitude fading.",
-        "c": "Correct: Doppler introduces rapid phase changes, challenging phase tracking.",
-        "d": "Doppler usually degrades performance unless counteracted."
+        "a": "Incorrect! Timing offset is less influenced by Doppler.",
+        "b": "Incorrect! Doppler causes frequency spreading and phase shifts, not just amplitude fading.",
+        "c": "Correct! Doppler introduces rapid phase changes, challenging phase tracking.",
+        "d": "Incorrect! Doppler usually degrades performance unless counteracted."
       },
       "correctAnswer": "c",
       "difficulty": "advanced"
@@ -146,10 +146,10 @@
         "d": "Increases immunity to amplitude fading"
       },
       "explanations": {
-        "a": "Timing is not controlled by modulation index.",
-        "b": "Correct: h = Δf × Tb; controls frequency separation and impacts bandwidth/ISI.",
-        "c": "Phase jitter is a PSK issue.",
-        "d": "Amplitude fading resistance comes from frequency-based modulation itself."
+        "a": "Incorrect! Timing is not controlled by modulation index.",
+        "b": "Correct! h = Δf × Tb; controls frequency separation and impacts bandwidth/ISI.",
+        "c": "Incorrect! Phase jitter is a PSK issue.",
+        "d": "Incorrect! Amplitude fading resistance comes from frequency-based modulation itself."
       },
       "correctAnswer": "b",
       "difficulty": "advanced"
@@ -163,10 +163,10 @@
         "d": "Use of raised cosine pulses"
       },
       "explanations": {
-        "a": "Equal amplitude and uniform phase spacing ensure maximized distance between symbols.",
-        "b": "PSK does not vary amplitude.",
-        "c": "Frequency separation applies to FSK, not PSK.",
-        "d": "Pulse shaping reduces ISI, not BER directly under ideal detection."
+        "a": "Correct! Equal amplitude and uniform phase spacing ensure maximized distance between symbols.",
+        "b": "Incorrect! PSK does not vary amplitude.",
+        "c": "Incorrect! Frequency separation applies to FSK, not PSK.",
+        "d": "Incorrect! Pulse shaping reduces ISI, not BER directly under ideal detection."
       },
       "correctAnswer": "a",
       "difficulty": "advanced"
