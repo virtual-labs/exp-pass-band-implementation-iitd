@@ -36,17 +36,17 @@ Each modulation scheme is selected based on system requirements such as bandwidt
 <ol class="mb-4 pl-4 list-decimal text-[#007bff] font-normal text-[19.2px]" style="font-family: Raleway, sans-serif">
   <li>
     <a href="./ASK.html" class="hover:text-[#3e6389] hover:underline">
-      <p>Passband Amplitude Shift Keying (ASK)</p>
+      Passband Amplitude Shift Keying (ASK)
     </a>
   </li>
   <li>
     <a href="./FSK.html" class="hover:text-[#3e6389] hover:underline">
-      <p>Passband Frequency Shift Keying (FSK)</p>
+      Passband Frequency Shift Keying (FSK)
     </a>
   </li>
   <li>
     <a href="./PSK.html" class="hover:text-[#3e6389] hover:underline">
-      <p>Passband Phase Shift Keying (PSK)</p>
+      Passband Phase Shift Keying (PSK)
     </a>
   </li>
 </ol>
