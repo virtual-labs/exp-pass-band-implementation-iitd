@@ -7,11 +7,30 @@
 </head>
 <body>
 
-<p>Digital modulation schemes are techniques used to encode information into a carrier signal by varying its properties according to discrete signal levels or symbols. Here’s an overview of three common digital modulation schemes: Amplitude Shift Keying (ASK), Frequency Shift Keying (FSK), and Phase Shift Keying (PSK). <b>Amplitude Shift Keying (ASK)</b> is the simplest digital modulation technique. In this modulation method, there is only one carrier, which is switched ON/OFF depending upon the input binary sequence to transmit symbols 0 and 1. The binary ASK system was one of the earliest forms of digital modulation used in wireless telegraphy. For <b>Frequency Shift Keying (FSK)</b>, two binary values are represented by two different frequencies. For example, we choose two carrier frequencies, f1 and f2, where f1 > f2. Then we modulate binary bit "1" with f1 and binary bit "0" with frequency f2, which is lower than f1. In <b>Phase Shift Keying (PSK)</b>, the carrier signal phase is modulated according to the input signal; binary "1" is represented by a change in phase relative to the last bit, and binary "0" is sent with the same phase as the preceding one. For example, whenever we need to transmit binary "1", we change the signal's phase by 180 degrees, but the phase remains the same when we transmit binary "0". Each modulation scheme has its advantages and is chosen based on the specific requirements of the communication system, such as bandwidth, power efficiency, and noise resilience.</p>
+<p>
+Digital modulation schemes are techniques used to encode information onto a high-frequency carrier by varying its amplitude, frequency, or phase according to discrete signal levels or symbols. Here’s an overview of three common digital modulation schemes: 
+<b>Amplitude Shift Keying (ASK)</b>, <b>Frequency Shift Keying (FSK)</b>, and <b>Phase Shift Keying (PSK)</b>.
+</p>
+
+<p class="mb-4">
+<b>Passband Amplitude Shift Keying (ASK)</b> modulates the amplitude of a carrier signal according to the input binary sequence. In binary ASK (BASK), a binary '1' is transmitted as a carrier with amplitude \(A_c\), while a binary '0' is transmitted by reducing the carrier amplitude to zero. This ON-OFF characteristic makes ASK simple to implement, though it is sensitive to noise and amplitude variations.
+</p>
+
+<p class="mb-4">
+<b>Passband Frequency Shift Keying (FSK)</b> represents binary values using two distinct carrier frequencies. For instance, binary '1' is transmitted using a higher frequency \(f_1\) (mark), and binary '0' uses a lower frequency \(f_2\) (space). The frequency changes are constant-amplitude, which makes FSK more robust than ASK in the presence of amplitude noise and suitable for RF or band-limited channels.
+</p>
+
+<p class="mb-4">
+<b>Passband Phase Shift Keying (PSK)</b> encodes information by varying the phase of the carrier signal. In binary PSK (BPSK), binary '1' is represented by a 180° phase shift relative to the previous symbol, while binary '0' retains the same phase. PSK offers high power efficiency and better noise immunity than ASK and FSK, at the cost of more complex receiver design.
+</p>
+
+<p class="mb-4">
+Each modulation scheme is selected based on system requirements such as bandwidth efficiency, power efficiency, noise resilience, and implementation complexity. Passband modulation allows these digital signals to be transmitted over RF, optical, or other band-limited channels.
+</p>
 
 <br><br>
 
-### Keying Techniques
+<h3>Passband Digital Modulation Techniques</h3>
 
 <ol class="mb-4 pl-4 list-decimal text-[#007bff] font-normal text-[19.2px]" style="font-family: Raleway, sans-serif">
   <li>
@@ -30,5 +49,6 @@
     </a>
   </li>
 </ol>
+
 </body>
 </html>
