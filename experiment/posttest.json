@@ -3,7 +3,7 @@
   "questions": [
     {
       "questionNumber": 1,
-      "question": "1. In coherent passband FSK systems, what is the most significant technical challenge that must be addressed in high-mobility wireless environments?",
+      "question": "In coherent passband FSK systems, what is the most significant technical challenge that must be addressed in high-mobility wireless environments?",
       "answers": {
         "a": "Maintaining precise carrier phase alignment over fast fading channels",
         "b": "Achieving orthogonal frequency separation under limited bandwidth",
@@ -21,7 +21,7 @@
     },
     {
       "questionNumber": 2,
-      "question": "2. Why does passband ASK perform poorly in environments with multipath fading and Doppler effects?",
+      "question": "Why does passband ASK perform poorly in environments with multipath fading and Doppler effects?",
       "answers": {
         "a": "The receiver cannot distinguish closely spaced frequencies",
         "b": "Amplitude information is highly susceptible to deep fades and phase distortion",
@@ -39,7 +39,7 @@
     },
     {
       "questionNumber": 3,
-      "question": "3. Among passband ASK, FSK, and PSK, which is the most bandwidth-efficient under ideal channel conditions and why?",
+      "question": "Among passband ASK, FSK, and PSK, which is the most bandwidth-efficient under ideal channel conditions and why?",
       "answers": {
         "a": "ASK, because it encodes directly in amplitude",
         "b": "FSK, due to orthogonal frequency spacing",
@@ -57,7 +57,7 @@
     },
     {
       "questionNumber": 4,
-      "question": "4. What is the practical limitation of increasing the number of phase states in a passband PSK system?",
+      "question": "What is the practical limitation of increasing the number of phase states in a passband PSK system?",
       "answers": {
         "a": "It increases spectral efficiency linearly with no trade-offs",
         "b": "It decreases SNR requirement per bit",
@@ -75,7 +75,7 @@
     },
     {
       "questionNumber": 5,
-      "question": "5. Why is non-coherent FSK preferred in low-complexity wireless sensor nodes despite slightly worse BER than coherent FSK?",
+      "question": "Why is non-coherent FSK preferred in low-complexity wireless sensor nodes despite slightly worse BER than coherent FSK?",
       "answers": {
         "a": "It enables higher bandwidth efficiency",
         "b": "It simplifies receiver design by removing the need for carrier phase tracking",
@@ -93,7 +93,7 @@
     },
     {
       "questionNumber": 6,
-      "question": "6. Why is PSK considered more power-efficient than FSK or ASK under the same bandwidth constraints in a passband system?",
+      "question": "Why is PSK considered more power-efficient than FSK or ASK under the same bandwidth constraints in a passband system?",
       "answers": {
         "a": "PSK transmits using multiple carriers simultaneously",
         "b": "PSK uses phase transitions that are less affected by amplitude noise",
@@ -111,7 +111,7 @@
     },
     {
       "questionNumber": 7,
-      "question": "7. In which scenario would passband FSK be preferred over PSK for digital communication?",
+      "question": "In which scenario would passband FSK be preferred over PSK for digital communication?",
       "answers": {
         "a": "When maximizing bandwidth efficiency is the top priority",
         "b": "When constant-envelope modulation is needed for nonlinear RF amplifiers",
@@ -129,7 +129,7 @@
     },
     {
       "questionNumber": 8,
-      "question": "8. Why is ASK rarely used in modern passband wireless systems, even though it’s simple to implement?",
+      "question": "Why is ASK rarely used in modern passband wireless systems, even though it’s simple to implement?",
       "answers": {
         "a": "It requires complex carrier tracking algorithms",
         "b": "It performs poorly under amplitude fading and interference",
@@ -147,7 +147,7 @@
     },
     {
       "questionNumber": 9,
-      "question": "9. Why does the BER increase in higher-order passband PSK systems such as 8-PSK or 16-PSK?",
+      "question": "Why does the BER increase in higher-order passband PSK systems such as 8-PSK or 16-PSK?",
       "answers": {
         "a": "They require greater frequency spacing between symbols",
         "b": "The symbols become closer in phase, making them harder to distinguish under noise",
@@ -165,7 +165,7 @@
     },
     {
       "questionNumber": 10,
-      "question": "10. Which of the following will **most effectively** improve the performance of a passband PSK system in a fading channel?",
+      "question": "Which of the following will most effectively improve the performance of a passband PSK system in a fading channel?",
       "answers": {
         "a": "Increasing carrier frequency",
         "b": "Using Gray coding",
