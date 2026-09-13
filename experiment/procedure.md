@@ -26,8 +26,8 @@
             Click the <em>“Generate Carrier”</em> button to generate the carrier wave using the carrier frequency and sampling frequency provided.
         </li>
         <li>
-            <strong>3. Perform Modulation and Demodulation:</strong> 
-            Click the <em>“Simulate" and "Demodulate”</em> button to perform the modulation (ASK, FSK, or PSK) and demodulation process on the randomly generated message signal using the generated carrier.
+            <strong>3. Perform Modulation, then Demodulation:</strong> 
+            First click “Simulate” to perform the modulation (ASK, FSK, or PSK) on the randomly generated message signal using the generated carrier. Once the modulated signal is generated, click “Demodulate” to recover the message from it. Demodulation requires modulation to have been performed first.
         </li>
         <li>
             <strong>4. Plot BER vs. SNR:</strong> 
